@@ -17,9 +17,7 @@
 
 'use strict';
 const ContainerRegistryV1 = require('../../dist/container-registry/v1');
-const { readExternalSources } = require('ibm-cloud-sdk-core');
 const authHelper = require('../resources/auth-helper.js');
-const { util } = require('prettier');
 const utilf = require('util');
 
 // testcase timeout value (200s).
@@ -309,7 +307,7 @@ describe('ContainerRegistryV1_integration', () => {
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
   });
-  test('restoreImage()', async done => {
+  test('restoreImage()', done => {
     const params = {
       image: utilf.format('%s/%s/sdktest:nope', configRegistryDNSName, gotNamespace),
     };
@@ -317,7 +315,7 @@ describe('ContainerRegistryV1_integration', () => {
     containerRegistryService
       .restoreImage(params)
       .then(res => {
-        done(err);
+        done(res);
       })
       .catch(err => {
         expect(err.status).toEqual(404);
