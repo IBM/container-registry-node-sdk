@@ -1,3 +1,10 @@
+## [0.0.3](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.2...v0.0.3) (2021-03-25)
+
+
+### Bug Fixes
+
+* **Project:** Specify public access scope on package publication ([f08d72b](https://github.com/IBM/container-registry-node-sdk/commit/f08d72bcb54a503300d16eb411114c767b8c3697))
+
 ## [0.0.2](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.1...v0.0.2) (2021-03-25)
 
 
