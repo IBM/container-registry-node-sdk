@@ -70,5 +70,8 @@
       "<rootDir>/test/"
     ],
     "testEnvironment": "node"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
