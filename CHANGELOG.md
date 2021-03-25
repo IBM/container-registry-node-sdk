@@ -1,3 +1,10 @@
+## [0.0.4](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.3...v0.0.4) (2021-03-25)
+
+
+### Bug Fixes
+
+* **Project:** Uncomment and fix the Readme links ([89f885d](https://github.com/IBM/container-registry-node-sdk/commit/89f885dd505a8a49c8a3471bf1f7abc609d8d988))
+
 ## [0.0.3](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.2...v0.0.3) (2021-03-25)
 
 
