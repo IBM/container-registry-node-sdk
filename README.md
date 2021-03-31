@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/IBM/container-registry-node-sdk.svg?branch=main)](https://travis.ibm.com/IBM/container-registry-node-sdk)
+[![Build Status](https://travis-ci.com/IBM/container-registry-node-sdk.svg?branch=main)](https://travis-ci.com/IBM/container-registry-node-sdk)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![npm-version](https://img.shields.io/npm/v/@ibm-cloud/ibm-container-registry.svg)](https://www.npmjs.com/package/@ibm-cloud/ibm-container-registry)
 [![codecov](https://codecov.io/gh/IBM/container-registry-node-sdk/branch/main/graph/badge.svg)](https://codecov.io/gh/IBM/container-registry-node-sdk)

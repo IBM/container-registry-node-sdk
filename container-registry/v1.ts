@@ -456,9 +456,9 @@ class ContainerRegistryV1 extends BaseService {
    * @param {string} params.image - The full IBM Cloud registry path to the image that you want to inspect. Run
    * `ibmcloud cr images` or call the `GET /images/json` endpoint to review images that are in the registry.
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
-   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>>}
+   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>>}
    */
-  public getImageManifest(params: ContainerRegistryV1.GetImageManifestParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>> {
+  public getImageManifest(params: ContainerRegistryV1.GetImageManifestParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>> {
     const _params = Object.assign({}, params);
     const requiredParams = ['image'];
 
