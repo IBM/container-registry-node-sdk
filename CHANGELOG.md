@@ -1,3 +1,10 @@
+## [0.0.6](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.5...v0.0.6) (2021-04-14)
+
+
+### Bug Fixes
+
+* **project:** Remove codecov steps ([be5ffdf](https://github.com/IBM/container-registry-node-sdk/commit/be5ffdf6ba698781ed27a4252f13c5da7725372a))
+
 ## [0.0.5](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.4...v0.0.5) (2021-04-14)
 
 
