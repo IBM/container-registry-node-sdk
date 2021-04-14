@@ -1,3 +1,12 @@
+## [0.0.5](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.4...v0.0.5) (2021-04-14)
+
+
+### Bug Fixes
+
+* **project:** Updated package-lock.json ([6c9a6b4](https://github.com/IBM/container-registry-node-sdk/commit/6c9a6b4c97f4f04c09a8bc6c7ca4c6ee38c60b6f))
+* **Registry:** Correct getImageManifest definition ([e94c16c](https://github.com/IBM/container-registry-node-sdk/commit/e94c16cf3d6515cc4d36399489775e6c246e0d64))
+* **Registry:** Fix image list integration test ([953a5e3](https://github.com/IBM/container-registry-node-sdk/commit/953a5e38426f4c70bb98aff1313585f35ad4c6cf))
+
 ## [0.0.4](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.3...v0.0.4) (2021-03-25)
 
 
