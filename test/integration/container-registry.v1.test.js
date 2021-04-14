@@ -85,7 +85,7 @@ describe('ContainerRegistryV1_integration', () => {
   test('listImages()', async () => {
     const params = {
       namespace: configNamespace,
-      includeIbm: true,
+      includeIbm: false,
       includePrivate: true,
       includeManifestLists: true,
       vulnerabilities: true,
