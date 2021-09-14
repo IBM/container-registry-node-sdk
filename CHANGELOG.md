@@ -1,3 +1,10 @@
+## [0.0.7](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.6...v0.0.7) (2021-09-14)
+
+
+### Bug Fixes
+
+* **project:** Update dependencies ([bf2cfd6](https://github.com/IBM/container-registry-node-sdk/commit/bf2cfd64a511ae6e2cbde937ad6b0c93b73ec711))
+
 ## [0.0.6](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.5...v0.0.6) (2021-04-14)
 
 
