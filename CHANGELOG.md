@@ -1,3 +1,12 @@
+## [0.0.8](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.7...v0.0.8) (2022-01-18)
+
+
+### Bug Fixes
+
+* **project:** Make node versions consistent with SDK core ([d981bcd](https://github.com/IBM/container-registry-node-sdk/commit/d981bcd927938ff6ee7059d3dceabcd95ad06af7))
+* **project:** update all dependencies ([997f9b6](https://github.com/IBM/container-registry-node-sdk/commit/997f9b6c797c1ab5f56336cc31a5c9c94ad204dd))
+* **project:** Use node 14 for the post-merge semantic-release work ([537ce88](https://github.com/IBM/container-registry-node-sdk/commit/537ce88ad5577698e5c10d38bade5d57ae4cee69))
+
 ## [0.0.7](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.6...v0.0.7) (2021-09-14)
 
 
