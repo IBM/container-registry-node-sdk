@@ -1,3 +1,10 @@
+## [0.0.10](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.9...v0.0.10) (2022-04-05)
+
+
+### Bug Fixes
+
+* **project:** Update minimist dependency for vulnerability ([df5c1f2](https://github.com/IBM/container-registry-node-sdk/commit/df5c1f25f8ee120ef98e2c37e5f6b6e9fadab168))
+
 ## [0.0.9](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.8...v0.0.9) (2022-03-03)
 
 
