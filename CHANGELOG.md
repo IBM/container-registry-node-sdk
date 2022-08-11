@@ -1,3 +1,11 @@
+## [0.0.11](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.10...v0.0.11) (2022-08-11)
+
+
+### Bug Fixes
+
+* **project:** Update dependencies to resolve dependabot findings ([2c6bc68](https://github.com/IBM/container-registry-node-sdk/commit/2c6bc6856b91c8f37f09f0864cbd8b2969d84d14))
+* **project:** update secrets baseline ([e8bb2c4](https://github.com/IBM/container-registry-node-sdk/commit/e8bb2c406c16d11431e1d46bc6ce7954dcdc8e27))
+
 ## [0.0.10](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.9...v0.0.10) (2022-04-05)
 
 
