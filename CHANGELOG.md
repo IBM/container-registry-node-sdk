@@ -1,3 +1,12 @@
+## [0.0.12](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.11...v0.0.12) (2022-11-29)
+
+
+### Bug Fixes
+
+* **project:** add closest match eslint config ([af3da64](https://github.com/IBM/container-registry-node-sdk/commit/af3da64939800106fb96118624aca05173e7dfe6))
+* **project:** put prittier back ([9a52f2c](https://github.com/IBM/container-registry-node-sdk/commit/9a52f2c9fbb10b4599e78cc505e9e52b8d61b689))
+* **project:** upgrade vulnerable minimatch ([940a8c3](https://github.com/IBM/container-registry-node-sdk/commit/940a8c3295c60abd27a37a8e3ea5f261b1a512de))
+
 ## [0.0.11](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.10...v0.0.11) (2022-08-11)
 
 
