@@ -1,3 +1,11 @@
+## [0.0.14](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.13...v0.0.14) (2022-12-30)
+
+
+### Bug Fixes
+
+* **project:** remove support for node <14 ([b5b690b](https://github.com/IBM/container-registry-node-sdk/commit/b5b690b39365044be8b71450f8685253d59ad530))
+* **project:** upgrade vulnerable dependency ([833fd44](https://github.com/IBM/container-registry-node-sdk/commit/833fd44e080032825dc42b4249ccdd7112dced76))
+
 ## [0.0.13](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.12...v0.0.13) (2022-12-16)
 
 
