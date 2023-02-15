@@ -1,3 +1,10 @@
+## [0.0.15](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.14...v0.0.15) (2023-02-15)
+
+
+### Bug Fixes
+
+* **project:** upgrade vulnerable dependency ([ea03a97](https://github.com/IBM/container-registry-node-sdk/commit/ea03a974b0d8409ff65d2132594fe0b8f0004207))
+
 ## [0.0.14](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.13...v0.0.14) (2022-12-30)
 
 
