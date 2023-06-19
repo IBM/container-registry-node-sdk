@@ -1,9 +1,14 @@
 language: node_js
 
+dist: jammy
+
 sudo: false
 
 node_js:
-- 14
+- 16
+- 18
+- 19
+- lts/
 
 # before_install:
 # -  'openssl aes-256-cbc -K $my_key -iv $my_iv -in myservice.env.enc -out myservice.env -d || true'
@@ -21,5 +26,13 @@ deploy:
   skip_cleanup: true
   script: npx semantic-release
   on:
-    node: 14
+    node: lts/
     branch: main
+ # ensure semantic-release is functional
+- provider: script
+  script:
+    - npx semantic-release --dry-run
+  skip_cleanup: true
+  on:
+    all_branches: true
+    node: lts/
