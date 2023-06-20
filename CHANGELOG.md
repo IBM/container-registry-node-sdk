@@ -1,3 +1,13 @@
+# [1.0.0](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.15...v1.0.0) (2023-06-20)
+
+
+* feat(upgrade) replace vav3 with vav4 ([ba0cf1a](https://github.com/IBM/container-registry-node-sdk/commit/ba0cf1a039698e04cc49eb78f30a9ec6e9d01a89))
+
+
+### BREAKING CHANGES
+
+* VA API V3 has been removed and replaced with VA V4
+
 ## [0.0.15](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.14...v0.0.15) (2023-02-15)
 
 
