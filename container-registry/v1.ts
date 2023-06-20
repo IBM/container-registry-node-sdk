@@ -1,5 +1,5 @@
 /**
- * (C) Copyright IBM Corp. 2021.
+ * (C) Copyright IBM Corp. 2023.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,56 @@
  */
 
 /**
- * IBM OpenAPI SDK Code Generator Version: 3.29.1-b338fb38-20210313-010605
+ * IBM OpenAPI SDK Code Generator Version: 3.73.0-eeee85a9-20230607-165104
  */
-
 
 import * as extend from 'extend';
 import { IncomingHttpHeaders, OutgoingHttpHeaders } from 'http';
-import { Authenticator, BaseService, getAuthenticatorFromEnvironment, getMissingParams, UserOptions } from 'ibm-cloud-sdk-core';
+import {
+  Authenticator,
+  BaseService,
+  getAuthenticatorFromEnvironment,
+  validateParams,
+  UserOptions,
+} from 'ibm-cloud-sdk-core';
 import { getSdkHeaders } from '../lib/common';
 
 /**
  * Management interface for IBM Cloud Container Registry
+ *
+ * API Version: 1.1
  */
 
 class ContainerRegistryV1 extends BaseService {
+  static DEFAULT_SERVICE_URL: string = 'https://icr.io';
 
-  static DEFAULT_SERVICE_URL: string = 'https://us.icr.io';
   static DEFAULT_SERVICE_NAME: string = 'container_registry';
+
+  private static _regionalEndpoints = new Map([
+    ['global', 'https://icr.io'], // global
+    ['us-south', 'https://us.icr.io'], // us-south
+    ['uk-south', 'https://uk.icr.io'], // uk-south
+    ['eu-gb', 'https://uk.icr.io'], // eu-gb
+    ['eu-central', 'https://de.icr.io'], // eu-central
+    ['eu-de', 'https://de.icr.io'], // eu-de
+    ['ap-north', 'https://jp.icr.io'], // ap-north
+    ['jp-tok', 'https://jp.icr.io'], // jp-tok
+    ['ap-south', 'https://au.icr.io'], // ap-south
+    ['au-syd', 'https://au.icr.io'], // au-syd
+    ['jp-osa', 'https://jp2.icr.io'], // jp-osa
+    ['ca-tor', 'https://ca.icr.io'], // ca-tor
+    ['br-sao', 'https://br.icr.io'], // br-sao
+  ]);
+
+  /**
+   * Returns the service URL associated with the specified region.
+   * @param region a string representing the region
+   * @returns the service URL associated with the specified region or undefined
+   * if no mapping for the region exists
+   */
+  public static getServiceUrlForRegion(region: string): string {
+    return this._regionalEndpoints.get(region)
+  }
 
   /*************************
    * Factory method
@@ -64,7 +97,6 @@ class ContainerRegistryV1 extends BaseService {
     return service;
   }
 
-
   /** The unique ID for your IBM Cloud account. */
   account: string;
 
@@ -82,10 +114,10 @@ class ContainerRegistryV1 extends BaseService {
   constructor(options: UserOptions) {
     options = options || {};
 
-    const requiredParams = ['account'];
-    const missingParams = getMissingParams(options, requiredParams);
-    if (missingParams) {
-      throw missingParams;
+    const _requiredParams = ['account'];
+    const _validationErrors = validateParams(options, _requiredParams, null);
+    if (_validationErrors) {
+      throw _validationErrors;
     }
     super(options);
     if (options.serviceUrl) {
@@ -109,10 +141,22 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.AuthOptions>>}
    */
-  public getAuth(params?: ContainerRegistryV1.GetAuthParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.AuthOptions>> {
-    const _params = Object.assign({}, params);
+  public getAuth(
+    params?: ContainerRegistryV1.GetAuthParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.AuthOptions>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getAuth');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'getAuth'
+    );
 
     const parameters = {
       options: {
@@ -120,15 +164,20 @@ class ContainerRegistryV1 extends BaseService {
         method: 'GET',
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Update authorization options.
@@ -140,17 +189,29 @@ class ContainerRegistryV1 extends BaseService {
    * @param {boolean} [params.privateOnly] - Restrict account to only be able to push and pull images over private
    * connections.
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
-   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>>}
+   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>>}
    */
-  public updateAuth(params?: ContainerRegistryV1.UpdateAuthParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>> {
-    const _params = Object.assign({}, params);
+  public updateAuth(
+    params?: ContainerRegistryV1.UpdateAuthParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['iamAuthz', 'privateOnly', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
     const body = {
       'iam_authz': _params.iamAuthz,
-      'private_only': _params.privateOnly
+      'private_only': _params.privateOnly,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'updateAuth');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'updateAuth'
+    );
 
     const parameters = {
       options: {
@@ -159,16 +220,20 @@ class ContainerRegistryV1 extends BaseService {
         body,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Content-Type': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Content-Type': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
-
+  }
   /*************************
    * images
    ************************/
@@ -199,8 +264,16 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.RemoteAPIImage[]>>}
    */
-  public listImages(params?: ContainerRegistryV1.ListImagesParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.RemoteAPIImage[]>> {
-    const _params = Object.assign({}, params);
+  public listImages(
+    params?: ContainerRegistryV1.ListImagesParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.RemoteAPIImage[]>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['namespace', 'includeIbm', 'includePrivate', 'includeManifestLists', 'vulnerabilities', 'repository', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
     const query = {
       'namespace': _params.namespace,
@@ -208,10 +281,14 @@ class ContainerRegistryV1 extends BaseService {
       'includePrivate': _params.includePrivate,
       'includeManifestLists': _params.includeManifestLists,
       'vulnerabilities': _params.vulnerabilities,
-      'repository': _params.repository
+      'repository': _params.repository,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listImages');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'listImages'
+    );
 
     const parameters = {
       options: {
@@ -220,15 +297,20 @@ class ContainerRegistryV1 extends BaseService {
         qs: query,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Bulk delete images.
@@ -241,17 +323,23 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageBulkDeleteResult>>}
    */
-  public bulkDeleteImages(params: ContainerRegistryV1.BulkDeleteImagesParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageBulkDeleteResult>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['bulkDelete'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public bulkDeleteImages(
+    params: ContainerRegistryV1.BulkDeleteImagesParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageBulkDeleteResult>> {
+    const _params = { ...params };
+    const _requiredParams = ['bulkDelete'];
+    const _validParams = ['bulkDelete', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const body = _params.bulkDelete;
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'bulkDeleteImages');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'bulkDeleteImages'
+    );
 
     const parameters = {
       options: {
@@ -260,16 +348,21 @@ class ContainerRegistryV1 extends BaseService {
         body,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * List images by digest.
@@ -286,17 +379,29 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageDigest[]>>}
    */
-  public listImageDigests(params?: ContainerRegistryV1.ListImageDigestsParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageDigest[]>> {
-    const _params = Object.assign({}, params);
+  public listImageDigests(
+    params?: ContainerRegistryV1.ListImageDigestsParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageDigest[]>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['excludeTagged', 'excludeVa', 'includeIbm', 'repositories', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
     const body = {
       'exclude_tagged': _params.excludeTagged,
       'exclude_va': _params.excludeVa,
       'include_ibm': _params.includeIbm,
-      'repositories': _params.repositories
+      'repositories': _params.repositories,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listImageDigests');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'listImageDigests'
+    );
 
     const parameters = {
       options: {
@@ -305,21 +410,27 @@ class ContainerRegistryV1 extends BaseService {
         body,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Create tag.
    *
-   * Create a new tag in a private registry that refers to an existing image in the same region.
+   * Create a new tag in a private registry that refers to an existing image in the same region. If the fromimage has
+   * Red Hat® signatures and the toimage is in a different repository, those signatures are copied to that repository.
    *
    * @param {Object} params - The parameters to send to the service.
    * @param {string} params.fromimage - The name of the image that you want to create a new tag for, in the format
@@ -327,23 +438,29 @@ class ContainerRegistryV1 extends BaseService {
    * that are in the registry.
    * @param {string} params.toimage - The new tag for the image, in the format &lt;REPOSITORY&gt;:&lt;TAG&gt;.
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
-   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>>}
+   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>>}
    */
-  public tagImage(params: ContainerRegistryV1.TagImageParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['fromimage', 'toimage'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public tagImage(
+    params: ContainerRegistryV1.TagImageParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>> {
+    const _params = { ...params };
+    const _requiredParams = ['fromimage', 'toimage'];
+    const _validParams = ['fromimage', 'toimage', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const query = {
       'fromimage': _params.fromimage,
-      'toimage': _params.toimage
+      'toimage': _params.toimage,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'tagImage');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'tagImage'
+    );
 
     const parameters = {
       options: {
@@ -352,14 +469,19 @@ class ContainerRegistryV1 extends BaseService {
         qs: query,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Delete image.
@@ -372,20 +494,26 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageDeleteResult>>}
    */
-  public deleteImage(params: ContainerRegistryV1.DeleteImageParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageDeleteResult>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['image'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public deleteImage(
+    params: ContainerRegistryV1.DeleteImageParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageDeleteResult>> {
+    const _params = { ...params };
+    const _requiredParams = ['image'];
+    const _validParams = ['image', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const path = {
-      'image': _params.image
+      'image': _params.image,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'deleteImage');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'deleteImage'
+    );
 
     const parameters = {
       options: {
@@ -394,15 +522,20 @@ class ContainerRegistryV1 extends BaseService {
         path,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Inspect an image.
@@ -415,20 +548,26 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageInspection>>}
    */
-  public inspectImage(params: ContainerRegistryV1.InspectImageParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageInspection>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['image'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public inspectImage(
+    params: ContainerRegistryV1.InspectImageParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageInspection>> {
+    const _params = { ...params };
+    const _requiredParams = ['image'];
+    const _validParams = ['image', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const path = {
-      'image': _params.image
+      'image': _params.image,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'inspectImage');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'inspectImage'
+    );
 
     const parameters = {
       options: {
@@ -437,15 +576,20 @@ class ContainerRegistryV1 extends BaseService {
         path,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Get image manifest.
@@ -458,20 +602,26 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>>}
    */
-  public getImageManifest(params: ContainerRegistryV1.GetImageManifestParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['image'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public getImageManifest(
+    params: ContainerRegistryV1.GetImageManifestParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>> {
+    const _params = { ...params };
+    const _requiredParams = ['image'];
+    const _validParams = ['image', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const path = {
-      'image': _params.image
+      'image': _params.image,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getImageManifest');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'getImageManifest'
+    );
 
     const parameters = {
       options: {
@@ -480,16 +630,20 @@ class ContainerRegistryV1 extends BaseService {
         path,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
-
+  }
   /*************************
    * messages
    ************************/
@@ -503,10 +657,22 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<string>>}
    */
-  public getMessages(params?: ContainerRegistryV1.GetMessagesParams): Promise<ContainerRegistryV1.Response<string>> {
-    const _params = Object.assign({}, params);
+  public getMessages(
+    params?: ContainerRegistryV1.GetMessagesParams
+  ): Promise<ContainerRegistryV1.Response<string>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getMessages');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'getMessages'
+    );
 
     const parameters = {
       options: {
@@ -514,15 +680,19 @@ class ContainerRegistryV1 extends BaseService {
         method: 'GET',
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
-
+  }
   /*************************
    * namespaces
    ************************/
@@ -536,10 +706,22 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<string[]>>}
    */
-  public listNamespaces(params?: ContainerRegistryV1.ListNamespacesParams): Promise<ContainerRegistryV1.Response<string[]>> {
-    const _params = Object.assign({}, params);
+  public listNamespaces(
+    params?: ContainerRegistryV1.ListNamespacesParams
+  ): Promise<ContainerRegistryV1.Response<string[]>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listNamespaces');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'listNamespaces'
+    );
 
     const parameters = {
       options: {
@@ -547,15 +729,20 @@ class ContainerRegistryV1 extends BaseService {
         method: 'GET',
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Detailed namespace list.
@@ -566,10 +753,22 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.NamespaceDetails[]>>}
    */
-  public listNamespaceDetails(params?: ContainerRegistryV1.ListNamespaceDetailsParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.NamespaceDetails[]>> {
-    const _params = Object.assign({}, params);
+  public listNamespaceDetails(
+    params?: ContainerRegistryV1.ListNamespaceDetailsParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.NamespaceDetails[]>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listNamespaceDetails');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'listNamespaceDetails'
+    );
 
     const parameters = {
       options: {
@@ -577,15 +776,20 @@ class ContainerRegistryV1 extends BaseService {
         method: 'GET',
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Create namespace.
@@ -593,26 +797,31 @@ class ContainerRegistryV1 extends BaseService {
    * Add a namespace to the targeted IBM Cloud account.
    *
    * @param {Object} params - The parameters to send to the service.
-   * @param {string} params.name - The name of the namespace.
-   * @param {string} [params.xAuthResourceGroup] - The ID of the resource group that the namespace will be created
-   * within.
+   * @param {string} params.name - The name of the namespace that you want to create.
+   * @param {string} [params.xAuthResourceGroup] - The ID of the resource group to which you want to add the namespace.
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Namespace>>}
    */
-  public createNamespace(params: ContainerRegistryV1.CreateNamespaceParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Namespace>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['name'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public createNamespace(
+    params: ContainerRegistryV1.CreateNamespaceParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Namespace>> {
+    const _params = { ...params };
+    const _requiredParams = ['name'];
+    const _validParams = ['name', 'xAuthResourceGroup', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const path = {
-      'name': _params.name
+      'name': _params.name,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'createNamespace');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'createNamespace'
+    );
 
     const parameters = {
       options: {
@@ -621,16 +830,21 @@ class ContainerRegistryV1 extends BaseService {
         path,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account,
-          'X-Auth-Resource-Group': _params.xAuthResourceGroup
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+            'X-Auth-Resource-Group': _params.xAuthResourceGroup,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Assign namespace.
@@ -638,25 +852,31 @@ class ContainerRegistryV1 extends BaseService {
    * Assign a namespace to the specified resource group in the targeted IBM Cloud account.
    *
    * @param {Object} params - The parameters to send to the service.
-   * @param {string} params.xAuthResourceGroup - The ID of the resource group that the namespace will be created within.
-   * @param {string} params.name - The name of the namespace to be updated.
+   * @param {string} params.xAuthResourceGroup - The ID of the resource group to which you want to add the namespace.
+   * @param {string} params.name - The name of the namespace that you want to udpate.
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Namespace>>}
    */
-  public assignNamespace(params: ContainerRegistryV1.AssignNamespaceParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Namespace>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['xAuthResourceGroup', 'name'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public assignNamespace(
+    params: ContainerRegistryV1.AssignNamespaceParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Namespace>> {
+    const _params = { ...params };
+    const _requiredParams = ['xAuthResourceGroup', 'name'];
+    const _validParams = ['xAuthResourceGroup', 'name', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const path = {
-      'name': _params.name
+      'name': _params.name,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'assignNamespace');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'assignNamespace'
+    );
 
     const parameters = {
       options: {
@@ -665,16 +885,21 @@ class ContainerRegistryV1 extends BaseService {
         path,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account,
-          'X-Auth-Resource-Group': _params.xAuthResourceGroup
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+            'X-Auth-Resource-Group': _params.xAuthResourceGroup,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Delete namespace.
@@ -685,22 +910,28 @@ class ContainerRegistryV1 extends BaseService {
    * @param {Object} params - The parameters to send to the service.
    * @param {string} params.name - The name of the namespace that you want to delete.
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
-   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>>}
+   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>>}
    */
-  public deleteNamespace(params: ContainerRegistryV1.DeleteNamespaceParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['name'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public deleteNamespace(
+    params: ContainerRegistryV1.DeleteNamespaceParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>> {
+    const _params = { ...params };
+    const _requiredParams = ['name'];
+    const _validParams = ['name', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const path = {
-      'name': _params.name
+      'name': _params.name,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'deleteNamespace');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'deleteNamespace'
+    );
 
     const parameters = {
       options: {
@@ -709,15 +940,19 @@ class ContainerRegistryV1 extends BaseService {
         path,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
-
+  }
   /*************************
    * plans
    ************************/
@@ -731,10 +966,22 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Plan>>}
    */
-  public getPlans(params?: ContainerRegistryV1.GetPlansParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Plan>> {
-    const _params = Object.assign({}, params);
+  public getPlans(
+    params?: ContainerRegistryV1.GetPlansParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Plan>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getPlans');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'getPlans'
+    );
 
     const parameters = {
       options: {
@@ -742,15 +989,20 @@ class ContainerRegistryV1 extends BaseService {
         method: 'GET',
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Update plans.
@@ -760,16 +1012,28 @@ class ContainerRegistryV1 extends BaseService {
    * @param {Object} [params] - The parameters to send to the service.
    * @param {string} [params.plan] -
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
-   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>>}
+   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>>}
    */
-  public updatePlans(params?: ContainerRegistryV1.UpdatePlansParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>> {
-    const _params = Object.assign({}, params);
+  public updatePlans(
+    params?: ContainerRegistryV1.UpdatePlansParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['plan', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
     const body = {
-      'plan': _params.plan
+      'plan': _params.plan,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'updatePlans');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'updatePlans'
+    );
 
     const parameters = {
       options: {
@@ -778,16 +1042,20 @@ class ContainerRegistryV1 extends BaseService {
         body,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Content-Type': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Content-Type': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
-
+  }
   /*************************
    * quotas
    ************************/
@@ -801,10 +1069,22 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Quota>>}
    */
-  public getQuota(params?: ContainerRegistryV1.GetQuotaParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Quota>> {
-    const _params = Object.assign({}, params);
+  public getQuota(
+    params?: ContainerRegistryV1.GetQuotaParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Quota>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getQuota');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'getQuota'
+    );
 
     const parameters = {
       options: {
@@ -812,15 +1092,20 @@ class ContainerRegistryV1 extends BaseService {
         method: 'GET',
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Update quotas.
@@ -831,17 +1116,29 @@ class ContainerRegistryV1 extends BaseService {
    * @param {number} [params.storageMegabytes] - Storage quota in megabytes. The value -1 denotes "Unlimited".
    * @param {number} [params.trafficMegabytes] - Traffic quota in megabytes. The value -1 denotes "Unlimited".
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
-   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>>}
+   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>>}
    */
-  public updateQuota(params?: ContainerRegistryV1.UpdateQuotaParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>> {
-    const _params = Object.assign({}, params);
+  public updateQuota(
+    params?: ContainerRegistryV1.UpdateQuotaParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['storageMegabytes', 'trafficMegabytes', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
     const body = {
       'storage_megabytes': _params.storageMegabytes,
-      'traffic_megabytes': _params.trafficMegabytes
+      'traffic_megabytes': _params.trafficMegabytes,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'updateQuota');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'updateQuota'
+    );
 
     const parameters = {
       options: {
@@ -850,16 +1147,20 @@ class ContainerRegistryV1 extends BaseService {
         body,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Content-Type': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Content-Type': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
-
+  }
   /*************************
    * retentions
    ************************/
@@ -873,10 +1174,22 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>>}
    */
-  public listRetentionPolicies(params?: ContainerRegistryV1.ListRetentionPoliciesParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>> {
-    const _params = Object.assign({}, params);
+  public listRetentionPolicies(
+    params?: ContainerRegistryV1.ListRetentionPoliciesParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listRetentionPolicies');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'listRetentionPolicies'
+    );
 
     const parameters = {
       options: {
@@ -884,15 +1197,20 @@ class ContainerRegistryV1 extends BaseService {
         method: 'GET',
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Set retention policy.
@@ -901,29 +1219,36 @@ class ContainerRegistryV1 extends BaseService {
    *
    * @param {Object} params - The parameters to send to the service.
    * @param {string} params.namespace - The namespace to which the retention policy is attached.
-   * @param {number} [params.imagesPerRepo] - Determines how many images will be retained for each repository when the
-   * retention policy is executed. The value -1 denotes 'Unlimited' (all images are retained).
-   * @param {boolean} [params.retainUntagged] - Determines if untagged images are retained when executing the retention
-   * policy. This is false by default meaning untagged images will be deleted when the policy is executed.
+   * @param {number} [params.imagesPerRepo] - Determines how many images are retained in each repository when the
+   * retention policy is processed. The value -1 denotes 'Unlimited' (all images are retained).
+   * @param {boolean} [params.retainUntagged] - Determines whether untagged images are retained when the retention
+   * policy is processed. The value is false by default, which means that  untagged images can be deleted when the
+   * policy runs.
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
-   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>>}
+   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>>}
    */
-  public setRetentionPolicy(params: ContainerRegistryV1.SetRetentionPolicyParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['namespace'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public setRetentionPolicy(
+    params: ContainerRegistryV1.SetRetentionPolicyParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>> {
+    const _params = { ...params };
+    const _requiredParams = ['namespace'];
+    const _validParams = ['namespace', 'imagesPerRepo', 'retainUntagged', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const body = {
       'namespace': _params.namespace,
       'images_per_repo': _params.imagesPerRepo,
-      'retain_untagged': _params.retainUntagged
+      'retain_untagged': _params.retainUntagged,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'setRetentionPolicy');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'setRetentionPolicy'
+    );
 
     const parameters = {
       options: {
@@ -932,15 +1257,20 @@ class ContainerRegistryV1 extends BaseService {
         body,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Content-Type': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Content-Type': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Analyze retention policy.
@@ -949,29 +1279,36 @@ class ContainerRegistryV1 extends BaseService {
    *
    * @param {Object} params - The parameters to send to the service.
    * @param {string} params.namespace - The namespace to which the retention policy is attached.
-   * @param {number} [params.imagesPerRepo] - Determines how many images will be retained for each repository when the
-   * retention policy is executed. The value -1 denotes 'Unlimited' (all images are retained).
-   * @param {boolean} [params.retainUntagged] - Determines if untagged images are retained when executing the retention
-   * policy. This is false by default meaning untagged images will be deleted when the policy is executed.
+   * @param {number} [params.imagesPerRepo] - Determines how many images are retained in each repository when the
+   * retention policy is processed. The value -1 denotes 'Unlimited' (all images are retained).
+   * @param {boolean} [params.retainUntagged] - Determines whether untagged images are retained when the retention
+   * policy is processed. The value is false by default, which means that  untagged images can be deleted when the
+   * policy runs.
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>>}
    */
-  public analyzeRetentionPolicy(params: ContainerRegistryV1.AnalyzeRetentionPolicyParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['namespace'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public analyzeRetentionPolicy(
+    params: ContainerRegistryV1.AnalyzeRetentionPolicyParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>> {
+    const _params = { ...params };
+    const _requiredParams = ['namespace'];
+    const _validParams = ['namespace', 'imagesPerRepo', 'retainUntagged', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const body = {
       'namespace': _params.namespace,
       'images_per_repo': _params.imagesPerRepo,
-      'retain_untagged': _params.retainUntagged
+      'retain_untagged': _params.retainUntagged,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'analyzeRetentionPolicy');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'analyzeRetentionPolicy'
+    );
 
     const parameters = {
       options: {
@@ -980,16 +1317,21 @@ class ContainerRegistryV1 extends BaseService {
         body,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Get retention policy.
@@ -1001,20 +1343,26 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.RetentionPolicy>>}
    */
-  public getRetentionPolicy(params: ContainerRegistryV1.GetRetentionPolicyParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.RetentionPolicy>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['namespace'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public getRetentionPolicy(
+    params: ContainerRegistryV1.GetRetentionPolicyParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.RetentionPolicy>> {
+    const _params = { ...params };
+    const _requiredParams = ['namespace'];
+    const _validParams = ['namespace', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const path = {
-      'namespace': _params.namespace
+      'namespace': _params.namespace,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getRetentionPolicy');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'getRetentionPolicy'
+    );
 
     const parameters = {
       options: {
@@ -1023,16 +1371,20 @@ class ContainerRegistryV1 extends BaseService {
         path,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
-
+  }
   /*************************
    * settings
    ************************/
@@ -1046,10 +1398,22 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.AccountSettings>>}
    */
-  public getSettings(params?: ContainerRegistryV1.GetSettingsParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.AccountSettings>> {
-    const _params = Object.assign({}, params);
+  public getSettings(
+    params?: ContainerRegistryV1.GetSettingsParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.AccountSettings>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getSettings');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'getSettings'
+    );
 
     const parameters = {
       options: {
@@ -1057,15 +1421,20 @@ class ContainerRegistryV1 extends BaseService {
         method: 'GET',
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Update account settings.
@@ -1075,16 +1444,28 @@ class ContainerRegistryV1 extends BaseService {
    * @param {Object} [params] - The parameters to send to the service.
    * @param {boolean} [params.platformMetrics] - Opt in to IBM Cloud Container Registry publishing platform metrics.
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
-   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>>}
+   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>>}
    */
-  public updateSettings(params?: ContainerRegistryV1.UpdateSettingsParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>> {
-    const _params = Object.assign({}, params);
+  public updateSettings(
+    params?: ContainerRegistryV1.UpdateSettingsParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['platformMetrics', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
     const body = {
-      'platform_metrics': _params.platformMetrics
+      'platform_metrics': _params.platformMetrics,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'updateSettings');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'updateSettings'
+    );
 
     const parameters = {
       options: {
@@ -1093,16 +1474,20 @@ class ContainerRegistryV1 extends BaseService {
         body,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Content-Type': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Content-Type': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
-
+  }
   /*************************
    * tags
    ************************/
@@ -1118,20 +1503,26 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageDeleteResult>>}
    */
-  public deleteImageTag(params: ContainerRegistryV1.DeleteImageTagParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageDeleteResult>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['image'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public deleteImageTag(
+    params: ContainerRegistryV1.DeleteImageTagParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.ImageDeleteResult>> {
+    const _params = { ...params };
+    const _requiredParams = ['image'];
+    const _validParams = ['image', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const path = {
-      'image': _params.image
+      'image': _params.image,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'deleteImageTag');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'deleteImageTag'
+    );
 
     const parameters = {
       options: {
@@ -1140,16 +1531,20 @@ class ContainerRegistryV1 extends BaseService {
         path,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
-
+  }
   /*************************
    * trash
    ************************/
@@ -1164,14 +1559,26 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>>}
    */
-  public listDeletedImages(params?: ContainerRegistryV1.ListDeletedImagesParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>> {
-    const _params = Object.assign({}, params);
+  public listDeletedImages(
+    params?: ContainerRegistryV1.ListDeletedImagesParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.JsonObject>> {
+    const _params = { ...params };
+    const _requiredParams = [];
+    const _validParams = ['namespace', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
+    }
 
     const query = {
-      'namespace': _params.namespace
+      'namespace': _params.namespace,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listDeletedImages');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'listDeletedImages'
+    );
 
     const parameters = {
       options: {
@@ -1180,15 +1587,20 @@ class ContainerRegistryV1 extends BaseService {
         qs: query,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Restore a digest and all associated tags.
@@ -1202,20 +1614,26 @@ class ContainerRegistryV1 extends BaseService {
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
    * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.RestoreResult>>}
    */
-  public restoreTags(params: ContainerRegistryV1.RestoreTagsParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.RestoreResult>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['digest'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public restoreTags(
+    params: ContainerRegistryV1.RestoreTagsParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.RestoreResult>> {
+    const _params = { ...params };
+    const _requiredParams = ['digest'];
+    const _validParams = ['digest', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const path = {
-      'digest': _params.digest
+      'digest': _params.digest,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'restoreTags');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'restoreTags'
+    );
 
     const parameters = {
       options: {
@@ -1224,15 +1642,20 @@ class ContainerRegistryV1 extends BaseService {
         path,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Accept': 'application/json',
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Accept': 'application/json',
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
+  }
 
   /**
    * Restore deleted image.
@@ -1244,22 +1667,28 @@ class ContainerRegistryV1 extends BaseService {
    * &lt;REPOSITORY&gt;:&lt;TAG&gt;. Run `ibmcloud cr trash-list` or call the `GET /trash/json` endpoint to review
    * images that are in the trash.
    * @param {OutgoingHttpHeaders} [params.headers] - Custom request headers
-   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>>}
+   * @returns {Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>>}
    */
-  public restoreImage(params: ContainerRegistryV1.RestoreImageParams): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.Empty>> {
-    const _params = Object.assign({}, params);
-    const requiredParams = ['image'];
-
-    const missingParams = getMissingParams(_params, requiredParams);
-    if (missingParams) {
-      return Promise.reject(missingParams);
+  public restoreImage(
+    params: ContainerRegistryV1.RestoreImageParams
+  ): Promise<ContainerRegistryV1.Response<ContainerRegistryV1.EmptyObject>> {
+    const _params = { ...params };
+    const _requiredParams = ['image'];
+    const _validParams = ['image', 'headers'];
+    const _validationErrors = validateParams(_params, _requiredParams, _validParams);
+    if (_validationErrors) {
+      return Promise.reject(_validationErrors);
     }
 
     const path = {
-      'image': _params.image
+      'image': _params.image,
     };
 
-    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'restoreImage');
+    const sdkHeaders = getSdkHeaders(
+      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
+      'v1',
+      'restoreImage'
+    );
 
     const parameters = {
       options: {
@@ -1268,15 +1697,19 @@ class ContainerRegistryV1 extends BaseService {
         path,
       },
       defaultOptions: extend(true, {}, this.baseOptions, {
-        headers: extend(true, sdkHeaders, {
-          'Account': this.account
-        }, _params.headers),
+        headers: extend(
+          true,
+          sdkHeaders,
+          {
+            'Account': this.account,
+          },
+          _params.headers
+        ),
       }),
     };
 
     return this.createRequest(parameters);
-  };
-
+  }
 }
 
 /*************************
@@ -1284,16 +1717,14 @@ class ContainerRegistryV1 extends BaseService {
  ************************/
 
 namespace ContainerRegistryV1 {
-
   /** Options for the `ContainerRegistryV1` constructor. */
   export interface Options extends UserOptions {
-
     /** The unique ID for your IBM Cloud account. */
     account: string;
   }
 
   /** An operation response. */
-  export interface Response<T = any>  {
+  export interface Response<T = any> {
     result: T;
     status: number;
     statusText: string;
@@ -1304,7 +1735,7 @@ namespace ContainerRegistryV1 {
   export type Callback<T> = (error: any, response?: Response<T>) => void;
 
   /** The body of a service request that returns no response data. */
-  export interface Empty { }
+  export interface EmptyObject {}
 
   /** A standard JS object, defined to avoid the limitations of `Object` and `object` */
   export interface JsonObject {
@@ -1439,18 +1870,18 @@ namespace ContainerRegistryV1 {
 
   /** Parameters for the `createNamespace` operation. */
   export interface CreateNamespaceParams {
-    /** The name of the namespace. */
+    /** The name of the namespace that you want to create. */
     name: string;
-    /** The ID of the resource group that the namespace will be created within. */
+    /** The ID of the resource group to which you want to add the namespace. */
     xAuthResourceGroup?: string;
     headers?: OutgoingHttpHeaders;
   }
 
   /** Parameters for the `assignNamespace` operation. */
   export interface AssignNamespaceParams {
-    /** The ID of the resource group that the namespace will be created within. */
+    /** The ID of the resource group to which you want to add the namespace. */
     xAuthResourceGroup: string;
-    /** The name of the namespace to be updated. */
+    /** The name of the namespace that you want to udpate. */
     name: string;
     headers?: OutgoingHttpHeaders;
   }
@@ -1496,12 +1927,12 @@ namespace ContainerRegistryV1 {
   export interface SetRetentionPolicyParams {
     /** The namespace to which the retention policy is attached. */
     namespace: string;
-    /** Determines how many images will be retained for each repository when the retention policy is executed. The
-     *  value -1 denotes 'Unlimited' (all images are retained).
+    /** Determines how many images are retained in each repository when the retention policy is processed. The value
+     *  -1 denotes 'Unlimited' (all images are retained).
      */
     imagesPerRepo?: number;
-    /** Determines if untagged images are retained when executing the retention policy. This is false by default
-     *  meaning untagged images will be deleted when the policy is executed.
+    /** Determines whether untagged images are retained when the retention policy is processed. The value is false
+     *  by default, which means that  untagged images can be deleted when the policy runs.
      */
     retainUntagged?: boolean;
     headers?: OutgoingHttpHeaders;
@@ -1511,12 +1942,12 @@ namespace ContainerRegistryV1 {
   export interface AnalyzeRetentionPolicyParams {
     /** The namespace to which the retention policy is attached. */
     namespace: string;
-    /** Determines how many images will be retained for each repository when the retention policy is executed. The
-     *  value -1 denotes 'Unlimited' (all images are retained).
+    /** Determines how many images are retained in each repository when the retention policy is processed. The value
+     *  -1 denotes 'Unlimited' (all images are retained).
      */
     imagesPerRepo?: number;
-    /** Determines if untagged images are retained when executing the retention policy. This is false by default
-     *  meaning untagged images will be deleted when the policy is executed.
+    /** Determines whether untagged images are retained when the retention policy is processed. The value is false
+     *  by default, which means that  untagged images can be deleted when the policy runs.
      */
     retainUntagged?: boolean;
     headers?: OutgoingHttpHeaders;
@@ -1745,18 +2176,16 @@ namespace ContainerRegistryV1 {
   export interface NamespaceDetails {
     /** The IBM Cloud account that owns the namespace. */
     account?: string;
-    /** When the namespace was created. */
+    /** The creation date of the namespace. */
     created_date?: string;
-    /** If the namespace has been assigned to a resource group, this is the IBM Cloud CRN representing the
-     *  namespace.
-     */
+    /** If the namespace is assigned to a resource group, the IBM Cloud CRN representing the namespace. */
     crn?: string;
     name?: string;
-    /** When the namespace was assigned to a resource group. */
+    /** The date that the namespace was assigned to a resource group. */
     resource_created_date?: string;
-    /** The resource group that the namespace is assigned to. */
+    /** The ID of the resource group to which the namespace is assigned. */
     resource_group?: string;
-    /** When the namespace was last updated. */
+    /** The date that the namespace was last updated. */
     updated_date?: string;
   }
 
@@ -1808,14 +2237,14 @@ namespace ContainerRegistryV1 {
 
   /** A document that contains the image retention settings for a namespace. */
   export interface RetentionPolicy {
-    /** Determines how many images will be retained for each repository when the retention policy is executed. The
-     *  value -1 denotes 'Unlimited' (all images are retained).
+    /** Determines how many images are retained in each repository when the retention policy is processed. The value
+     *  -1 denotes 'Unlimited' (all images are retained).
      */
     images_per_repo?: number;
     /** The namespace to which the retention policy is attached. */
     namespace: string;
-    /** Determines if untagged images are retained when executing the retention policy. This is false by default
-     *  meaning untagged images will be deleted when the policy is executed.
+    /** Determines whether untagged images are retained when the retention policy is processed. The value is false
+     *  by default, which means that  untagged images can be deleted when the policy runs.
      */
     retain_untagged?: boolean;
   }
@@ -1849,7 +2278,6 @@ namespace ContainerRegistryV1 {
     /** Summary of vulnerability status. */
     vulnerable?: string;
   }
-
 }
 
 export = ContainerRegistryV1;
