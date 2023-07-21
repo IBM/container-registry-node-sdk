@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/IBM/container-registry-node-sdk/compare/v1.0.0...v1.1.0) (2023-07-21)
+
+
+### Bug Fixes
+
+* **project:** Remediate vulnerabilities ([4e7cb6a](https://github.com/IBM/container-registry-node-sdk/commit/4e7cb6a84ee67bf3157466cab59a949469b817d6))
+
+
+### Features
+
+* **project:** Add eu-fr2 endpoint ([c416f78](https://github.com/IBM/container-registry-node-sdk/commit/c416f784af0e165185cfc0812a82043d15220628))
+
 # [1.0.0](https://github.com/IBM/container-registry-node-sdk/compare/v0.0.15...v1.0.0) (2023-06-20)
 
 
