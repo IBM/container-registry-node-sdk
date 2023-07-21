@@ -15,7 +15,7 @@
  */
 
 /**
- * IBM OpenAPI SDK Code Generator Version: 3.73.0-eeee85a9-20230607-165104
+ * IBM OpenAPI SDK Code Generator Version: 3.75.0-726bc7e3-20230713-221716
  */
 
 import * as extend from 'extend';
@@ -54,6 +54,7 @@ class ContainerRegistryV1 extends BaseService {
     ['jp-osa', 'https://jp2.icr.io'], // jp-osa
     ['ca-tor', 'https://ca.icr.io'], // ca-tor
     ['br-sao', 'https://br.icr.io'], // br-sao
+    ['eu-fr2', 'https://fr2.icr.io'], // eu-fr2
   ]);
 
   /**

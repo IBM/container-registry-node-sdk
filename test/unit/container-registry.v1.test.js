@@ -155,12 +155,13 @@ describe('ContainerRegistryV1', () => {
       expect(ContainerRegistryV1.getServiceUrlForRegion('jp-osa')).toBe('https://jp2.icr.io');      
       expect(ContainerRegistryV1.getServiceUrlForRegion('ca-tor')).toBe('https://ca.icr.io');      
       expect(ContainerRegistryV1.getServiceUrlForRegion('br-sao')).toBe('https://br.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('eu-fr2')).toBe('https://fr2.icr.io');      
     });
   });
 
   describe('getAuth', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getAuthTest() {
         // Construct the params object for operation getAuth
         const getAuthParams = {};
 
@@ -179,6 +180,21 @@ describe('ContainerRegistryV1', () => {
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getAuthTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getAuthTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getAuthTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -206,7 +222,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('updateAuth', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __updateAuthTest() {
         // Construct the params object for operation updateAuth
         const iamAuthz = true;
         const privateOnly = true;
@@ -232,6 +248,21 @@ describe('ContainerRegistryV1', () => {
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.body.iam_authz).toEqual(iamAuthz);
         expect(mockRequestOptions.body.private_only).toEqual(privateOnly);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __updateAuthTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __updateAuthTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __updateAuthTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -259,7 +290,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('listImages', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listImagesTest() {
         // Construct the params object for operation listImages
         const namespace = 'testString';
         const includeIbm = true;
@@ -297,6 +328,21 @@ describe('ContainerRegistryV1', () => {
         expect(mockRequestOptions.qs.includeManifestLists).toEqual(includeManifestLists);
         expect(mockRequestOptions.qs.vulnerabilities).toEqual(vulnerabilities);
         expect(mockRequestOptions.qs.repository).toEqual(repository);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listImagesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listImagesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listImagesTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -324,7 +370,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('bulkDeleteImages', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __bulkDeleteImagesTest() {
         // Construct the params object for operation bulkDeleteImages
         const bulkDelete = ['us.icr.io/birds/woodpecker@sha256:38f97dd92769b18ca82ad9ab6667af47306e66fea5b446937eea68b10ab4bbbb', 'us.icr.io/birds/bird@sha256:38f97dd92769b18ca82ad9ab6667af47306e66fea5b446937eea68b10ab4dddd'];
         const bulkDeleteImagesParams = {
@@ -347,6 +393,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.body).toEqual(bulkDelete);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __bulkDeleteImagesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __bulkDeleteImagesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __bulkDeleteImagesTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -394,7 +455,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('listImageDigests', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listImageDigestsTest() {
         // Construct the params object for operation listImageDigests
         const excludeTagged = false;
         const excludeVa = false;
@@ -426,6 +487,21 @@ describe('ContainerRegistryV1', () => {
         expect(mockRequestOptions.body.exclude_va).toEqual(excludeVa);
         expect(mockRequestOptions.body.include_ibm).toEqual(includeIbm);
         expect(mockRequestOptions.body.repositories).toEqual(repositories);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listImageDigestsTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listImageDigestsTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listImageDigestsTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -453,7 +529,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('tagImage', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __tagImageTest() {
         // Construct the params object for operation tagImage
         const fromimage = 'testString';
         const toimage = 'testString';
@@ -479,6 +555,21 @@ describe('ContainerRegistryV1', () => {
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.qs.fromimage).toEqual(fromimage);
         expect(mockRequestOptions.qs.toimage).toEqual(toimage);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __tagImageTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __tagImageTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __tagImageTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -528,7 +619,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('deleteImage', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __deleteImageTest() {
         // Construct the params object for operation deleteImage
         const image = 'testString';
         const deleteImageParams = {
@@ -551,6 +642,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.path.image).toEqual(image);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __deleteImageTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __deleteImageTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __deleteImageTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -598,7 +704,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('inspectImage', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __inspectImageTest() {
         // Construct the params object for operation inspectImage
         const image = 'testString';
         const inspectImageParams = {
@@ -621,6 +727,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.path.image).toEqual(image);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __inspectImageTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __inspectImageTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __inspectImageTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -668,7 +789,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('getImageManifest', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getImageManifestTest() {
         // Construct the params object for operation getImageManifest
         const image = 'testString';
         const getImageManifestParams = {
@@ -691,6 +812,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.path.image).toEqual(image);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getImageManifestTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getImageManifestTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getImageManifestTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -738,7 +874,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('getMessages', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getMessagesTest() {
         // Construct the params object for operation getMessages
         const getMessagesParams = {};
 
@@ -756,6 +892,21 @@ describe('ContainerRegistryV1', () => {
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getMessagesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getMessagesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getMessagesTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -783,7 +934,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('listNamespaces', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listNamespacesTest() {
         // Construct the params object for operation listNamespaces
         const listNamespacesParams = {};
 
@@ -802,6 +953,21 @@ describe('ContainerRegistryV1', () => {
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listNamespacesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listNamespacesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listNamespacesTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -829,7 +995,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('listNamespaceDetails', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listNamespaceDetailsTest() {
         // Construct the params object for operation listNamespaceDetails
         const listNamespaceDetailsParams = {};
 
@@ -848,6 +1014,21 @@ describe('ContainerRegistryV1', () => {
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listNamespaceDetailsTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listNamespaceDetailsTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listNamespaceDetailsTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -875,7 +1056,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('createNamespace', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __createNamespaceTest() {
         // Construct the params object for operation createNamespace
         const name = 'testString';
         const xAuthResourceGroup = 'testString';
@@ -901,6 +1082,21 @@ describe('ContainerRegistryV1', () => {
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         checkUserHeader(createRequestMock, 'X-Auth-Resource-Group', xAuthResourceGroup);
         expect(mockRequestOptions.path.name).toEqual(name);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __createNamespaceTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __createNamespaceTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __createNamespaceTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -948,7 +1144,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('assignNamespace', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __assignNamespaceTest() {
         // Construct the params object for operation assignNamespace
         const xAuthResourceGroup = 'testString';
         const name = 'testString';
@@ -974,6 +1170,21 @@ describe('ContainerRegistryV1', () => {
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         checkUserHeader(createRequestMock, 'X-Auth-Resource-Group', xAuthResourceGroup);
         expect(mockRequestOptions.path.name).toEqual(name);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __assignNamespaceTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __assignNamespaceTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __assignNamespaceTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1023,7 +1234,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('deleteNamespace', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __deleteNamespaceTest() {
         // Construct the params object for operation deleteNamespace
         const name = 'testString';
         const deleteNamespaceParams = {
@@ -1046,6 +1257,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.path.name).toEqual(name);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __deleteNamespaceTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __deleteNamespaceTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __deleteNamespaceTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1093,7 +1319,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('getPlans', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getPlansTest() {
         // Construct the params object for operation getPlans
         const getPlansParams = {};
 
@@ -1112,6 +1338,21 @@ describe('ContainerRegistryV1', () => {
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getPlansTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getPlansTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getPlansTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1139,7 +1380,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('updatePlans', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __updatePlansTest() {
         // Construct the params object for operation updatePlans
         const plan = 'Standard';
         const updatePlansParams = {
@@ -1162,6 +1403,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.body.plan).toEqual(plan);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __updatePlansTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __updatePlansTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __updatePlansTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1189,7 +1445,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('getQuota', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getQuotaTest() {
         // Construct the params object for operation getQuota
         const getQuotaParams = {};
 
@@ -1208,6 +1464,21 @@ describe('ContainerRegistryV1', () => {
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getQuotaTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getQuotaTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getQuotaTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1235,7 +1506,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('updateQuota', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __updateQuotaTest() {
         // Construct the params object for operation updateQuota
         const storageMegabytes = 26;
         const trafficMegabytes = 480;
@@ -1261,6 +1532,21 @@ describe('ContainerRegistryV1', () => {
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.body.storage_megabytes).toEqual(storageMegabytes);
         expect(mockRequestOptions.body.traffic_megabytes).toEqual(trafficMegabytes);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __updateQuotaTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __updateQuotaTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __updateQuotaTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1288,7 +1574,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('listRetentionPolicies', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listRetentionPoliciesTest() {
         // Construct the params object for operation listRetentionPolicies
         const listRetentionPoliciesParams = {};
 
@@ -1307,6 +1593,21 @@ describe('ContainerRegistryV1', () => {
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listRetentionPoliciesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listRetentionPoliciesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listRetentionPoliciesTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1334,7 +1635,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('setRetentionPolicy', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __setRetentionPolicyTest() {
         // Construct the params object for operation setRetentionPolicy
         const namespace = 'birds';
         const imagesPerRepo = 10;
@@ -1363,6 +1664,21 @@ describe('ContainerRegistryV1', () => {
         expect(mockRequestOptions.body.namespace).toEqual(namespace);
         expect(mockRequestOptions.body.images_per_repo).toEqual(imagesPerRepo);
         expect(mockRequestOptions.body.retain_untagged).toEqual(retainUntagged);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __setRetentionPolicyTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __setRetentionPolicyTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __setRetentionPolicyTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1410,7 +1726,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('analyzeRetentionPolicy', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __analyzeRetentionPolicyTest() {
         // Construct the params object for operation analyzeRetentionPolicy
         const namespace = 'birds';
         const imagesPerRepo = 10;
@@ -1439,6 +1755,21 @@ describe('ContainerRegistryV1', () => {
         expect(mockRequestOptions.body.namespace).toEqual(namespace);
         expect(mockRequestOptions.body.images_per_repo).toEqual(imagesPerRepo);
         expect(mockRequestOptions.body.retain_untagged).toEqual(retainUntagged);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __analyzeRetentionPolicyTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __analyzeRetentionPolicyTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __analyzeRetentionPolicyTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1486,7 +1817,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('getRetentionPolicy', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getRetentionPolicyTest() {
         // Construct the params object for operation getRetentionPolicy
         const namespace = 'testString';
         const getRetentionPolicyParams = {
@@ -1509,6 +1840,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.path.namespace).toEqual(namespace);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getRetentionPolicyTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getRetentionPolicyTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getRetentionPolicyTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1556,7 +1902,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('getSettings', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getSettingsTest() {
         // Construct the params object for operation getSettings
         const getSettingsParams = {};
 
@@ -1575,6 +1921,21 @@ describe('ContainerRegistryV1', () => {
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getSettingsTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getSettingsTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getSettingsTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1602,7 +1963,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('updateSettings', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __updateSettingsTest() {
         // Construct the params object for operation updateSettings
         const platformMetrics = true;
         const updateSettingsParams = {
@@ -1625,6 +1986,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.body.platform_metrics).toEqual(platformMetrics);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __updateSettingsTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __updateSettingsTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __updateSettingsTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1652,7 +2028,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('deleteImageTag', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __deleteImageTagTest() {
         // Construct the params object for operation deleteImageTag
         const image = 'testString';
         const deleteImageTagParams = {
@@ -1675,6 +2051,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.path.image).toEqual(image);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __deleteImageTagTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __deleteImageTagTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __deleteImageTagTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1722,7 +2113,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('listDeletedImages', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listDeletedImagesTest() {
         // Construct the params object for operation listDeletedImages
         const namespace = 'testString';
         const listDeletedImagesParams = {
@@ -1745,6 +2136,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.qs.namespace).toEqual(namespace);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listDeletedImagesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listDeletedImagesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listDeletedImagesTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1772,7 +2178,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('restoreTags', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __restoreTagsTest() {
         // Construct the params object for operation restoreTags
         const digest = 'testString';
         const restoreTagsParams = {
@@ -1795,6 +2201,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.path.digest).toEqual(digest);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __restoreTagsTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __restoreTagsTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __restoreTagsTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1842,7 +2263,7 @@ describe('ContainerRegistryV1', () => {
 
   describe('restoreImage', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __restoreImageTest() {
         // Construct the params object for operation restoreImage
         const image = 'testString';
         const restoreImageParams = {
@@ -1865,6 +2286,21 @@ describe('ContainerRegistryV1', () => {
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
         checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         expect(mockRequestOptions.path.image).toEqual(image);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __restoreImageTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __restoreImageTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __restoreImageTest();
       });
 
       test('should prioritize user-given headers', () => {
