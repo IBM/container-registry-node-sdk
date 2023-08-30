@@ -1,5 +1,5 @@
 /**
- * (C) Copyright IBM Corp. 2021.
+ * (C) Copyright IBM Corp. 2023.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
 
 // need to import the whole package to mock getAuthenticatorFromEnvironment
-const core = require('ibm-cloud-sdk-core');
-const { NoAuthAuthenticator, unitTestUtils } = core;
+const sdkCorePackage = require('ibm-cloud-sdk-core');
+
+const { NoAuthAuthenticator, unitTestUtils } = sdkCorePackage;
 
 const ContainerRegistryV1 = require('../../dist/container-registry/v1');
 
@@ -30,37 +30,46 @@ const {
   checkForSuccessfulExecution,
 } = unitTestUtils;
 
-const service = {
+const containerRegistryServiceOptions = {
   authenticator: new NoAuthAuthenticator(),
-  url: 'https://us.icr.io',
+  url: 'https://icr.io',
   account: 'testString',
 };
 
-const containerRegistryService = new ContainerRegistryV1(service);
+const containerRegistryService = new ContainerRegistryV1(containerRegistryServiceOptions);
 
-// dont actually create a request
-const createRequestMock = jest.spyOn(containerRegistryService, 'createRequest');
-createRequestMock.mockImplementation(() => Promise.resolve());
+let createRequestMock = null;
+function mock_createRequest() {
+  if (!createRequestMock) {
+    createRequestMock = jest.spyOn(containerRegistryService, 'createRequest');
+    createRequestMock.mockImplementation(() => Promise.resolve());
+  }
+}
 
 // dont actually construct an authenticator
-const getAuthenticatorMock = jest.spyOn(core, 'getAuthenticatorFromEnvironment');
+const getAuthenticatorMock = jest.spyOn(sdkCorePackage, 'getAuthenticatorFromEnvironment');
 getAuthenticatorMock.mockImplementation(() => new NoAuthAuthenticator());
-
-afterEach(() => {
-  createRequestMock.mockClear();
-  getAuthenticatorMock.mockClear();
-});
 
 // used for the service construction tests
 let requiredGlobals;
-beforeEach(() => {
-  // these are changed when passed into the factory/constructor, so re-init
-  requiredGlobals = {
-    account: 'testString',
-  };
-});
 
 describe('ContainerRegistryV1', () => {
+
+  beforeEach(() => {
+    mock_createRequest();
+    // these are changed when passed into the factory/constructor, so re-init
+    requiredGlobals = {
+      account: 'testString',
+    };
+  });
+
+  afterEach(() => {
+    if (createRequestMock) {
+      createRequestMock.mockClear();
+    }
+    getAuthenticatorMock.mockClear();
+  });
+  
   describe('the newInstance method', () => {
     test('should use defaults when options not provided', () => {
       const testInstance = ContainerRegistryV1.newInstance(requiredGlobals);
@@ -90,6 +99,7 @@ describe('ContainerRegistryV1', () => {
       expect(testInstance).toBeInstanceOf(ContainerRegistryV1);
     });
   });
+
   describe('the constructor', () => {
     test('use user-given service url', () => {
       let options = {
@@ -116,22 +126,46 @@ describe('ContainerRegistryV1', () => {
       expect(testInstance.baseOptions.serviceUrl).toBe(ContainerRegistryV1.DEFAULT_SERVICE_URL);
     });
   });
+
   describe('service-level tests', () => {
     describe('positive tests', () => {
       test('construct service with global params', () => {
-        const serviceObj = new ContainerRegistryV1(service);
+        const serviceObj = new ContainerRegistryV1(containerRegistryServiceOptions);
         expect(serviceObj).not.toBeNull();
-        expect(serviceObj.account).toEqual(service.account);
+        expect(serviceObj.account).toEqual(containerRegistryServiceOptions.account);
       });
     });
   });
+
+  describe('getServiceUrlForRegion', () => {
+    test('should return undefined for invalid region', () => {
+      expect(ContainerRegistryV1.getServiceUrlForRegion('INVALID_REGION')).toBeFalsy();
+    });
+    test('should return valid service url', () => {
+      expect(ContainerRegistryV1.getServiceUrlForRegion('global')).toBe('https://icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('us-south')).toBe('https://us.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('uk-south')).toBe('https://uk.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('eu-gb')).toBe('https://uk.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('eu-central')).toBe('https://de.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('eu-de')).toBe('https://de.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('ap-north')).toBe('https://jp.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('jp-tok')).toBe('https://jp.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('ap-south')).toBe('https://au.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('au-syd')).toBe('https://au.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('jp-osa')).toBe('https://jp2.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('ca-tor')).toBe('https://ca.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('br-sao')).toBe('https://br.icr.io');      
+      expect(ContainerRegistryV1.getServiceUrlForRegion('eu-fr2')).toBe('https://fr2.icr.io');      
+    });
+  });
+
   describe('getAuth', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getAuthTest() {
         // Construct the params object for operation getAuth
-        const params = {};
+        const getAuthParams = {};
 
-        const getAuthResult = containerRegistryService.getAuth(params);
+        const getAuthResult = containerRegistryService.getAuth(getAuthParams);
 
         // all methods should return a Promise
         expectToBePromise(getAuthResult);
@@ -139,27 +173,42 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/auth', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/auth', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getAuthTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getAuthTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getAuthTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const getAuthParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.getAuth(params);
+        containerRegistryService.getAuth(getAuthParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -170,18 +219,19 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('updateAuth', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __updateAuthTest() {
         // Construct the params object for operation updateAuth
         const iamAuthz = true;
         const privateOnly = true;
-        const params = {
-          iamAuthz: iamAuthz,
-          privateOnly: privateOnly,
+        const updateAuthParams = {
+          iamAuthz,
+          privateOnly,
         };
 
-        const updateAuthResult = containerRegistryService.updateAuth(params);
+        const updateAuthResult = containerRegistryService.updateAuth(updateAuthParams);
 
         // all methods should return a Promise
         expectToBePromise(updateAuthResult);
@@ -189,29 +239,44 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/auth', 'PATCH');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/auth', 'PATCH');
         const expectedAccept = undefined;
         const expectedContentType = 'application/json';
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.body['iam_authz']).toEqual(iamAuthz);
-        expect(options.body['private_only']).toEqual(privateOnly);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.body.iam_authz).toEqual(iamAuthz);
+        expect(mockRequestOptions.body.private_only).toEqual(privateOnly);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __updateAuthTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __updateAuthTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __updateAuthTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const updateAuthParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.updateAuth(params);
+        containerRegistryService.updateAuth(updateAuthParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -222,9 +287,10 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('listImages', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listImagesTest() {
         // Construct the params object for operation listImages
         const namespace = 'testString';
         const includeIbm = true;
@@ -232,16 +298,16 @@ describe('ContainerRegistryV1', () => {
         const includeManifestLists = true;
         const vulnerabilities = true;
         const repository = 'testString';
-        const params = {
-          namespace: namespace,
-          includeIbm: includeIbm,
-          includePrivate: includePrivate,
-          includeManifestLists: includeManifestLists,
-          vulnerabilities: vulnerabilities,
-          repository: repository,
+        const listImagesParams = {
+          namespace,
+          includeIbm,
+          includePrivate,
+          includeManifestLists,
+          vulnerabilities,
+          repository,
         };
 
-        const listImagesResult = containerRegistryService.listImages(params);
+        const listImagesResult = containerRegistryService.listImages(listImagesParams);
 
         // all methods should return a Promise
         expectToBePromise(listImagesResult);
@@ -249,33 +315,48 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/images', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/images', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.qs['namespace']).toEqual(namespace);
-        expect(options.qs['includeIBM']).toEqual(includeIbm);
-        expect(options.qs['includePrivate']).toEqual(includePrivate);
-        expect(options.qs['includeManifestLists']).toEqual(includeManifestLists);
-        expect(options.qs['vulnerabilities']).toEqual(vulnerabilities);
-        expect(options.qs['repository']).toEqual(repository);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.qs.namespace).toEqual(namespace);
+        expect(mockRequestOptions.qs.includeIBM).toEqual(includeIbm);
+        expect(mockRequestOptions.qs.includePrivate).toEqual(includePrivate);
+        expect(mockRequestOptions.qs.includeManifestLists).toEqual(includeManifestLists);
+        expect(mockRequestOptions.qs.vulnerabilities).toEqual(vulnerabilities);
+        expect(mockRequestOptions.qs.repository).toEqual(repository);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listImagesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listImagesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listImagesTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const listImagesParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.listImages(params);
+        containerRegistryService.listImages(listImagesParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -286,19 +367,17 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('bulkDeleteImages', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __bulkDeleteImagesTest() {
         // Construct the params object for operation bulkDeleteImages
-        const bulkDelete = [
-          'us.icr.io/birds/woodpecker@sha256:38f97dd92769b18ca82ad9ab6667af47306e66fea5b446937eea68b10ab4bbbb',
-          'us.icr.io/birds/bird@sha256:38f97dd92769b18ca82ad9ab6667af47306e66fea5b446937eea68b10ab4dddd',
-        ];
-        const params = {
-          bulkDelete: bulkDelete,
+        const bulkDelete = ['us.icr.io/birds/woodpecker@sha256:38f97dd92769b18ca82ad9ab6667af47306e66fea5b446937eea68b10ab4bbbb', 'us.icr.io/birds/bird@sha256:38f97dd92769b18ca82ad9ab6667af47306e66fea5b446937eea68b10ab4dddd'];
+        const bulkDeleteImagesParams = {
+          bulkDelete,
         };
 
-        const bulkDeleteImagesResult = containerRegistryService.bulkDeleteImages(params);
+        const bulkDeleteImagesResult = containerRegistryService.bulkDeleteImages(bulkDeleteImagesParams);
 
         // all methods should return a Promise
         expectToBePromise(bulkDeleteImagesResult);
@@ -306,25 +385,37 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/images/bulkdelete', 'POST');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/images/bulkdelete', 'POST');
         const expectedAccept = 'application/json';
         const expectedContentType = 'application/json';
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.body).toEqual(bulkDelete);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.body).toEqual(bulkDelete);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __bulkDeleteImagesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __bulkDeleteImagesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __bulkDeleteImagesTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
-        const bulkDelete = [
-          'us.icr.io/birds/woodpecker@sha256:38f97dd92769b18ca82ad9ab6667af47306e66fea5b446937eea68b10ab4bbbb',
-          'us.icr.io/birds/bird@sha256:38f97dd92769b18ca82ad9ab6667af47306e66fea5b446937eea68b10ab4dddd',
-        ];
+        const bulkDelete = ['us.icr.io/birds/woodpecker@sha256:38f97dd92769b18ca82ad9ab6667af47306e66fea5b446937eea68b10ab4bbbb', 'us.icr.io/birds/bird@sha256:38f97dd92769b18ca82ad9ab6667af47306e66fea5b446937eea68b10ab4dddd'];
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const bulkDeleteImagesParams = {
           bulkDelete,
           headers: {
             Accept: userAccept,
@@ -332,13 +423,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.bulkDeleteImages(params);
+        containerRegistryService.bulkDeleteImages(bulkDeleteImagesParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.bulkDeleteImages({});
@@ -347,36 +438,37 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const bulkDeleteImagesPromise = containerRegistryService.bulkDeleteImages();
-        expectToBePromise(bulkDeleteImagesPromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.bulkDeleteImages();
+        } catch (e) {
+          err = e;
+        }
 
-        bulkDeleteImagesPromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('listImageDigests', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listImageDigestsTest() {
         // Construct the params object for operation listImageDigests
         const excludeTagged = false;
         const excludeVa = false;
         const includeIbm = false;
         const repositories = ['testString'];
-        const params = {
-          excludeTagged: excludeTagged,
-          excludeVa: excludeVa,
-          includeIbm: includeIbm,
-          repositories: repositories,
+        const listImageDigestsParams = {
+          excludeTagged,
+          excludeVa,
+          includeIbm,
+          repositories,
         };
 
-        const listImageDigestsResult = containerRegistryService.listImageDigests(params);
+        const listImageDigestsResult = containerRegistryService.listImageDigests(listImageDigestsParams);
 
         // all methods should return a Promise
         expectToBePromise(listImageDigestsResult);
@@ -384,31 +476,46 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/images/digests', 'POST');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/images/digests', 'POST');
         const expectedAccept = 'application/json';
         const expectedContentType = 'application/json';
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.body['exclude_tagged']).toEqual(excludeTagged);
-        expect(options.body['exclude_va']).toEqual(excludeVa);
-        expect(options.body['include_ibm']).toEqual(includeIbm);
-        expect(options.body['repositories']).toEqual(repositories);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.body.exclude_tagged).toEqual(excludeTagged);
+        expect(mockRequestOptions.body.exclude_va).toEqual(excludeVa);
+        expect(mockRequestOptions.body.include_ibm).toEqual(includeIbm);
+        expect(mockRequestOptions.body.repositories).toEqual(repositories);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listImageDigestsTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listImageDigestsTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listImageDigestsTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const listImageDigestsParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.listImageDigests(params);
+        containerRegistryService.listImageDigests(listImageDigestsParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -419,18 +526,19 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('tagImage', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __tagImageTest() {
         // Construct the params object for operation tagImage
         const fromimage = 'testString';
         const toimage = 'testString';
-        const params = {
-          fromimage: fromimage,
-          toimage: toimage,
+        const tagImageParams = {
+          fromimage,
+          toimage,
         };
 
-        const tagImageResult = containerRegistryService.tagImage(params);
+        const tagImageResult = containerRegistryService.tagImage(tagImageParams);
 
         // all methods should return a Promise
         expectToBePromise(tagImageResult);
@@ -438,15 +546,30 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/images/tags', 'POST');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/images/tags', 'POST');
         const expectedAccept = undefined;
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.qs['fromimage']).toEqual(fromimage);
-        expect(options.qs['toimage']).toEqual(toimage);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.qs.fromimage).toEqual(fromimage);
+        expect(mockRequestOptions.qs.toimage).toEqual(toimage);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __tagImageTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __tagImageTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __tagImageTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -455,7 +578,7 @@ describe('ContainerRegistryV1', () => {
         const toimage = 'testString';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const tagImageParams = {
           fromimage,
           toimage,
           headers: {
@@ -464,13 +587,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.tagImage(params);
+        containerRegistryService.tagImage(tagImageParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.tagImage({});
@@ -479,30 +602,31 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const tagImagePromise = containerRegistryService.tagImage();
-        expectToBePromise(tagImagePromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.tagImage();
+        } catch (e) {
+          err = e;
+        }
 
-        tagImagePromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('deleteImage', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __deleteImageTest() {
         // Construct the params object for operation deleteImage
         const image = 'testString';
-        const params = {
-          image: image,
+        const deleteImageParams = {
+          image,
         };
 
-        const deleteImageResult = containerRegistryService.deleteImage(params);
+        const deleteImageResult = containerRegistryService.deleteImage(deleteImageParams);
 
         // all methods should return a Promise
         expectToBePromise(deleteImageResult);
@@ -510,14 +634,29 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/images/{image}', 'DELETE');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/images/{image}', 'DELETE');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.path['image']).toEqual(image);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.path.image).toEqual(image);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __deleteImageTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __deleteImageTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __deleteImageTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -525,7 +664,7 @@ describe('ContainerRegistryV1', () => {
         const image = 'testString';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const deleteImageParams = {
           image,
           headers: {
             Accept: userAccept,
@@ -533,13 +672,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.deleteImage(params);
+        containerRegistryService.deleteImage(deleteImageParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.deleteImage({});
@@ -548,30 +687,31 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const deleteImagePromise = containerRegistryService.deleteImage();
-        expectToBePromise(deleteImagePromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.deleteImage();
+        } catch (e) {
+          err = e;
+        }
 
-        deleteImagePromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('inspectImage', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __inspectImageTest() {
         // Construct the params object for operation inspectImage
         const image = 'testString';
-        const params = {
-          image: image,
+        const inspectImageParams = {
+          image,
         };
 
-        const inspectImageResult = containerRegistryService.inspectImage(params);
+        const inspectImageResult = containerRegistryService.inspectImage(inspectImageParams);
 
         // all methods should return a Promise
         expectToBePromise(inspectImageResult);
@@ -579,14 +719,29 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/images/{image}/json', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/images/{image}/json', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.path['image']).toEqual(image);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.path.image).toEqual(image);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __inspectImageTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __inspectImageTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __inspectImageTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -594,7 +749,7 @@ describe('ContainerRegistryV1', () => {
         const image = 'testString';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const inspectImageParams = {
           image,
           headers: {
             Accept: userAccept,
@@ -602,13 +757,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.inspectImage(params);
+        containerRegistryService.inspectImage(inspectImageParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.inspectImage({});
@@ -617,30 +772,31 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const inspectImagePromise = containerRegistryService.inspectImage();
-        expectToBePromise(inspectImagePromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.inspectImage();
+        } catch (e) {
+          err = e;
+        }
 
-        inspectImagePromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('getImageManifest', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getImageManifestTest() {
         // Construct the params object for operation getImageManifest
         const image = 'testString';
-        const params = {
-          image: image,
+        const getImageManifestParams = {
+          image,
         };
 
-        const getImageManifestResult = containerRegistryService.getImageManifest(params);
+        const getImageManifestResult = containerRegistryService.getImageManifest(getImageManifestParams);
 
         // all methods should return a Promise
         expectToBePromise(getImageManifestResult);
@@ -648,14 +804,29 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/images/{image}/manifest', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/images/{image}/manifest', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.path['image']).toEqual(image);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.path.image).toEqual(image);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getImageManifestTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getImageManifestTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getImageManifestTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -663,7 +834,7 @@ describe('ContainerRegistryV1', () => {
         const image = 'testString';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const getImageManifestParams = {
           image,
           headers: {
             Accept: userAccept,
@@ -671,13 +842,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.getImageManifest(params);
+        containerRegistryService.getImageManifest(getImageManifestParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.getImageManifest({});
@@ -686,27 +857,28 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const getImageManifestPromise = containerRegistryService.getImageManifest();
-        expectToBePromise(getImageManifestPromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.getImageManifest();
+        } catch (e) {
+          err = e;
+        }
 
-        getImageManifestPromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('getMessages', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getMessagesTest() {
         // Construct the params object for operation getMessages
-        const params = {};
+        const getMessagesParams = {};
 
-        const getMessagesResult = containerRegistryService.getMessages(params);
+        const getMessagesResult = containerRegistryService.getMessages(getMessagesParams);
 
         // all methods should return a Promise
         expectToBePromise(getMessagesResult);
@@ -714,26 +886,41 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/messages', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/messages', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getMessagesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getMessagesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getMessagesTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const getMessagesParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.getMessages(params);
+        containerRegistryService.getMessages(getMessagesParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -744,13 +931,14 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('listNamespaces', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listNamespacesTest() {
         // Construct the params object for operation listNamespaces
-        const params = {};
+        const listNamespacesParams = {};
 
-        const listNamespacesResult = containerRegistryService.listNamespaces(params);
+        const listNamespacesResult = containerRegistryService.listNamespaces(listNamespacesParams);
 
         // all methods should return a Promise
         expectToBePromise(listNamespacesResult);
@@ -758,27 +946,42 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/namespaces', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/namespaces', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listNamespacesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listNamespacesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listNamespacesTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const listNamespacesParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.listNamespaces(params);
+        containerRegistryService.listNamespaces(listNamespacesParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -789,13 +992,14 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('listNamespaceDetails', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listNamespaceDetailsTest() {
         // Construct the params object for operation listNamespaceDetails
-        const params = {};
+        const listNamespaceDetailsParams = {};
 
-        const listNamespaceDetailsResult = containerRegistryService.listNamespaceDetails(params);
+        const listNamespaceDetailsResult = containerRegistryService.listNamespaceDetails(listNamespaceDetailsParams);
 
         // all methods should return a Promise
         expectToBePromise(listNamespaceDetailsResult);
@@ -803,27 +1007,42 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/namespaces/details', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/namespaces/details', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listNamespaceDetailsTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listNamespaceDetailsTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listNamespaceDetailsTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const listNamespaceDetailsParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.listNamespaceDetails(params);
+        containerRegistryService.listNamespaceDetails(listNamespaceDetailsParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -834,18 +1053,19 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('createNamespace', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __createNamespaceTest() {
         // Construct the params object for operation createNamespace
         const name = 'testString';
         const xAuthResourceGroup = 'testString';
-        const params = {
-          name: name,
-          xAuthResourceGroup: xAuthResourceGroup,
+        const createNamespaceParams = {
+          name,
+          xAuthResourceGroup,
         };
 
-        const createNamespaceResult = containerRegistryService.createNamespace(params);
+        const createNamespaceResult = containerRegistryService.createNamespace(createNamespaceParams);
 
         // all methods should return a Promise
         expectToBePromise(createNamespaceResult);
@@ -853,15 +1073,30 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/namespaces/{name}', 'PUT');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/namespaces/{name}', 'PUT');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         checkUserHeader(createRequestMock, 'X-Auth-Resource-Group', xAuthResourceGroup);
-        expect(options.path['name']).toEqual(name);
+        expect(mockRequestOptions.path.name).toEqual(name);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __createNamespaceTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __createNamespaceTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __createNamespaceTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -869,7 +1104,7 @@ describe('ContainerRegistryV1', () => {
         const name = 'testString';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const createNamespaceParams = {
           name,
           headers: {
             Accept: userAccept,
@@ -877,13 +1112,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.createNamespace(params);
+        containerRegistryService.createNamespace(createNamespaceParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.createNamespace({});
@@ -892,32 +1127,33 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const createNamespacePromise = containerRegistryService.createNamespace();
-        expectToBePromise(createNamespacePromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.createNamespace();
+        } catch (e) {
+          err = e;
+        }
 
-        createNamespacePromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('assignNamespace', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __assignNamespaceTest() {
         // Construct the params object for operation assignNamespace
         const xAuthResourceGroup = 'testString';
         const name = 'testString';
-        const params = {
-          xAuthResourceGroup: xAuthResourceGroup,
-          name: name,
+        const assignNamespaceParams = {
+          xAuthResourceGroup,
+          name,
         };
 
-        const assignNamespaceResult = containerRegistryService.assignNamespace(params);
+        const assignNamespaceResult = containerRegistryService.assignNamespace(assignNamespaceParams);
 
         // all methods should return a Promise
         expectToBePromise(assignNamespaceResult);
@@ -925,15 +1161,30 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/namespaces/{name}', 'PATCH');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/namespaces/{name}', 'PATCH');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
         checkUserHeader(createRequestMock, 'X-Auth-Resource-Group', xAuthResourceGroup);
-        expect(options.path['name']).toEqual(name);
+        expect(mockRequestOptions.path.name).toEqual(name);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __assignNamespaceTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __assignNamespaceTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __assignNamespaceTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -942,7 +1193,7 @@ describe('ContainerRegistryV1', () => {
         const name = 'testString';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const assignNamespaceParams = {
           xAuthResourceGroup,
           name,
           headers: {
@@ -951,13 +1202,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.assignNamespace(params);
+        containerRegistryService.assignNamespace(assignNamespaceParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.assignNamespace({});
@@ -966,30 +1217,31 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const assignNamespacePromise = containerRegistryService.assignNamespace();
-        expectToBePromise(assignNamespacePromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.assignNamespace();
+        } catch (e) {
+          err = e;
+        }
 
-        assignNamespacePromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('deleteNamespace', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __deleteNamespaceTest() {
         // Construct the params object for operation deleteNamespace
         const name = 'testString';
-        const params = {
-          name: name,
+        const deleteNamespaceParams = {
+          name,
         };
 
-        const deleteNamespaceResult = containerRegistryService.deleteNamespace(params);
+        const deleteNamespaceResult = containerRegistryService.deleteNamespace(deleteNamespaceParams);
 
         // all methods should return a Promise
         expectToBePromise(deleteNamespaceResult);
@@ -997,14 +1249,29 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/namespaces/{name}', 'DELETE');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/namespaces/{name}', 'DELETE');
         const expectedAccept = undefined;
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.path['name']).toEqual(name);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.path.name).toEqual(name);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __deleteNamespaceTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __deleteNamespaceTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __deleteNamespaceTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1012,7 +1279,7 @@ describe('ContainerRegistryV1', () => {
         const name = 'testString';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const deleteNamespaceParams = {
           name,
           headers: {
             Accept: userAccept,
@@ -1020,13 +1287,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.deleteNamespace(params);
+        containerRegistryService.deleteNamespace(deleteNamespaceParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.deleteNamespace({});
@@ -1035,27 +1302,28 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const deleteNamespacePromise = containerRegistryService.deleteNamespace();
-        expectToBePromise(deleteNamespacePromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.deleteNamespace();
+        } catch (e) {
+          err = e;
+        }
 
-        deleteNamespacePromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('getPlans', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getPlansTest() {
         // Construct the params object for operation getPlans
-        const params = {};
+        const getPlansParams = {};
 
-        const getPlansResult = containerRegistryService.getPlans(params);
+        const getPlansResult = containerRegistryService.getPlans(getPlansParams);
 
         // all methods should return a Promise
         expectToBePromise(getPlansResult);
@@ -1063,27 +1331,42 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/plans', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/plans', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getPlansTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getPlansTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getPlansTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const getPlansParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.getPlans(params);
+        containerRegistryService.getPlans(getPlansParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -1094,16 +1377,17 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('updatePlans', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __updatePlansTest() {
         // Construct the params object for operation updatePlans
         const plan = 'Standard';
-        const params = {
-          plan: plan,
+        const updatePlansParams = {
+          plan,
         };
 
-        const updatePlansResult = containerRegistryService.updatePlans(params);
+        const updatePlansResult = containerRegistryService.updatePlans(updatePlansParams);
 
         // all methods should return a Promise
         expectToBePromise(updatePlansResult);
@@ -1111,28 +1395,43 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/plans', 'PATCH');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/plans', 'PATCH');
         const expectedAccept = undefined;
         const expectedContentType = 'application/json';
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.body['plan']).toEqual(plan);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.body.plan).toEqual(plan);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __updatePlansTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __updatePlansTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __updatePlansTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const updatePlansParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.updatePlans(params);
+        containerRegistryService.updatePlans(updatePlansParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -1143,13 +1442,14 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('getQuota', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getQuotaTest() {
         // Construct the params object for operation getQuota
-        const params = {};
+        const getQuotaParams = {};
 
-        const getQuotaResult = containerRegistryService.getQuota(params);
+        const getQuotaResult = containerRegistryService.getQuota(getQuotaParams);
 
         // all methods should return a Promise
         expectToBePromise(getQuotaResult);
@@ -1157,27 +1457,42 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/quotas', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/quotas', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getQuotaTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getQuotaTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getQuotaTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const getQuotaParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.getQuota(params);
+        containerRegistryService.getQuota(getQuotaParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -1188,18 +1503,19 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('updateQuota', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __updateQuotaTest() {
         // Construct the params object for operation updateQuota
         const storageMegabytes = 26;
         const trafficMegabytes = 480;
-        const params = {
-          storageMegabytes: storageMegabytes,
-          trafficMegabytes: trafficMegabytes,
+        const updateQuotaParams = {
+          storageMegabytes,
+          trafficMegabytes,
         };
 
-        const updateQuotaResult = containerRegistryService.updateQuota(params);
+        const updateQuotaResult = containerRegistryService.updateQuota(updateQuotaParams);
 
         // all methods should return a Promise
         expectToBePromise(updateQuotaResult);
@@ -1207,29 +1523,44 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/quotas', 'PATCH');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/quotas', 'PATCH');
         const expectedAccept = undefined;
         const expectedContentType = 'application/json';
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.body['storage_megabytes']).toEqual(storageMegabytes);
-        expect(options.body['traffic_megabytes']).toEqual(trafficMegabytes);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.body.storage_megabytes).toEqual(storageMegabytes);
+        expect(mockRequestOptions.body.traffic_megabytes).toEqual(trafficMegabytes);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __updateQuotaTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __updateQuotaTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __updateQuotaTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const updateQuotaParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.updateQuota(params);
+        containerRegistryService.updateQuota(updateQuotaParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -1240,13 +1571,14 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('listRetentionPolicies', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listRetentionPoliciesTest() {
         // Construct the params object for operation listRetentionPolicies
-        const params = {};
+        const listRetentionPoliciesParams = {};
 
-        const listRetentionPoliciesResult = containerRegistryService.listRetentionPolicies(params);
+        const listRetentionPoliciesResult = containerRegistryService.listRetentionPolicies(listRetentionPoliciesParams);
 
         // all methods should return a Promise
         expectToBePromise(listRetentionPoliciesResult);
@@ -1254,27 +1586,42 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/retentions', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/retentions', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listRetentionPoliciesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listRetentionPoliciesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listRetentionPoliciesTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const listRetentionPoliciesParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.listRetentionPolicies(params);
+        containerRegistryService.listRetentionPolicies(listRetentionPoliciesParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -1285,20 +1632,21 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('setRetentionPolicy', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __setRetentionPolicyTest() {
         // Construct the params object for operation setRetentionPolicy
         const namespace = 'birds';
         const imagesPerRepo = 10;
         const retainUntagged = false;
-        const params = {
-          namespace: namespace,
-          imagesPerRepo: imagesPerRepo,
-          retainUntagged: retainUntagged,
+        const setRetentionPolicyParams = {
+          namespace,
+          imagesPerRepo,
+          retainUntagged,
         };
 
-        const setRetentionPolicyResult = containerRegistryService.setRetentionPolicy(params);
+        const setRetentionPolicyResult = containerRegistryService.setRetentionPolicy(setRetentionPolicyParams);
 
         // all methods should return a Promise
         expectToBePromise(setRetentionPolicyResult);
@@ -1306,16 +1654,31 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/retentions', 'POST');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/retentions', 'POST');
         const expectedAccept = undefined;
         const expectedContentType = 'application/json';
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.body['namespace']).toEqual(namespace);
-        expect(options.body['images_per_repo']).toEqual(imagesPerRepo);
-        expect(options.body['retain_untagged']).toEqual(retainUntagged);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.body.namespace).toEqual(namespace);
+        expect(mockRequestOptions.body.images_per_repo).toEqual(imagesPerRepo);
+        expect(mockRequestOptions.body.retain_untagged).toEqual(retainUntagged);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __setRetentionPolicyTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __setRetentionPolicyTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __setRetentionPolicyTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1323,7 +1686,7 @@ describe('ContainerRegistryV1', () => {
         const namespace = 'birds';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const setRetentionPolicyParams = {
           namespace,
           headers: {
             Accept: userAccept,
@@ -1331,13 +1694,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.setRetentionPolicy(params);
+        containerRegistryService.setRetentionPolicy(setRetentionPolicyParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.setRetentionPolicy({});
@@ -1346,36 +1709,35 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const setRetentionPolicyPromise = containerRegistryService.setRetentionPolicy();
-        expectToBePromise(setRetentionPolicyPromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.setRetentionPolicy();
+        } catch (e) {
+          err = e;
+        }
 
-        setRetentionPolicyPromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('analyzeRetentionPolicy', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __analyzeRetentionPolicyTest() {
         // Construct the params object for operation analyzeRetentionPolicy
         const namespace = 'birds';
         const imagesPerRepo = 10;
         const retainUntagged = false;
-        const params = {
-          namespace: namespace,
-          imagesPerRepo: imagesPerRepo,
-          retainUntagged: retainUntagged,
+        const analyzeRetentionPolicyParams = {
+          namespace,
+          imagesPerRepo,
+          retainUntagged,
         };
 
-        const analyzeRetentionPolicyResult = containerRegistryService.analyzeRetentionPolicy(
-          params
-        );
+        const analyzeRetentionPolicyResult = containerRegistryService.analyzeRetentionPolicy(analyzeRetentionPolicyParams);
 
         // all methods should return a Promise
         expectToBePromise(analyzeRetentionPolicyResult);
@@ -1383,16 +1745,31 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/retentions/analyze', 'POST');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/retentions/analyze', 'POST');
         const expectedAccept = 'application/json';
         const expectedContentType = 'application/json';
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.body['namespace']).toEqual(namespace);
-        expect(options.body['images_per_repo']).toEqual(imagesPerRepo);
-        expect(options.body['retain_untagged']).toEqual(retainUntagged);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.body.namespace).toEqual(namespace);
+        expect(mockRequestOptions.body.images_per_repo).toEqual(imagesPerRepo);
+        expect(mockRequestOptions.body.retain_untagged).toEqual(retainUntagged);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __analyzeRetentionPolicyTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __analyzeRetentionPolicyTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __analyzeRetentionPolicyTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1400,7 +1777,7 @@ describe('ContainerRegistryV1', () => {
         const namespace = 'birds';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const analyzeRetentionPolicyParams = {
           namespace,
           headers: {
             Accept: userAccept,
@@ -1408,13 +1785,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.analyzeRetentionPolicy(params);
+        containerRegistryService.analyzeRetentionPolicy(analyzeRetentionPolicyParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.analyzeRetentionPolicy({});
@@ -1423,30 +1800,31 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const analyzeRetentionPolicyPromise = containerRegistryService.analyzeRetentionPolicy();
-        expectToBePromise(analyzeRetentionPolicyPromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.analyzeRetentionPolicy();
+        } catch (e) {
+          err = e;
+        }
 
-        analyzeRetentionPolicyPromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('getRetentionPolicy', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getRetentionPolicyTest() {
         // Construct the params object for operation getRetentionPolicy
         const namespace = 'testString';
-        const params = {
-          namespace: namespace,
+        const getRetentionPolicyParams = {
+          namespace,
         };
 
-        const getRetentionPolicyResult = containerRegistryService.getRetentionPolicy(params);
+        const getRetentionPolicyResult = containerRegistryService.getRetentionPolicy(getRetentionPolicyParams);
 
         // all methods should return a Promise
         expectToBePromise(getRetentionPolicyResult);
@@ -1454,14 +1832,29 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/retentions/{namespace}', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/retentions/{namespace}', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.path['namespace']).toEqual(namespace);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.path.namespace).toEqual(namespace);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getRetentionPolicyTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getRetentionPolicyTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getRetentionPolicyTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1469,7 +1862,7 @@ describe('ContainerRegistryV1', () => {
         const namespace = 'testString';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const getRetentionPolicyParams = {
           namespace,
           headers: {
             Accept: userAccept,
@@ -1477,13 +1870,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.getRetentionPolicy(params);
+        containerRegistryService.getRetentionPolicy(getRetentionPolicyParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.getRetentionPolicy({});
@@ -1492,27 +1885,28 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const getRetentionPolicyPromise = containerRegistryService.getRetentionPolicy();
-        expectToBePromise(getRetentionPolicyPromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.getRetentionPolicy();
+        } catch (e) {
+          err = e;
+        }
 
-        getRetentionPolicyPromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('getSettings', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __getSettingsTest() {
         // Construct the params object for operation getSettings
-        const params = {};
+        const getSettingsParams = {};
 
-        const getSettingsResult = containerRegistryService.getSettings(params);
+        const getSettingsResult = containerRegistryService.getSettings(getSettingsParams);
 
         // all methods should return a Promise
         expectToBePromise(getSettingsResult);
@@ -1520,27 +1914,42 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/settings', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/settings', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __getSettingsTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __getSettingsTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __getSettingsTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const getSettingsParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.getSettings(params);
+        containerRegistryService.getSettings(getSettingsParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -1551,16 +1960,17 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('updateSettings', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __updateSettingsTest() {
         // Construct the params object for operation updateSettings
         const platformMetrics = true;
-        const params = {
-          platformMetrics: platformMetrics,
+        const updateSettingsParams = {
+          platformMetrics,
         };
 
-        const updateSettingsResult = containerRegistryService.updateSettings(params);
+        const updateSettingsResult = containerRegistryService.updateSettings(updateSettingsParams);
 
         // all methods should return a Promise
         expectToBePromise(updateSettingsResult);
@@ -1568,28 +1978,43 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/settings', 'PATCH');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/settings', 'PATCH');
         const expectedAccept = undefined;
         const expectedContentType = 'application/json';
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.body['platform_metrics']).toEqual(platformMetrics);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.body.platform_metrics).toEqual(platformMetrics);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __updateSettingsTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __updateSettingsTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __updateSettingsTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const updateSettingsParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.updateSettings(params);
+        containerRegistryService.updateSettings(updateSettingsParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -1600,16 +2025,17 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('deleteImageTag', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __deleteImageTagTest() {
         // Construct the params object for operation deleteImageTag
         const image = 'testString';
-        const params = {
-          image: image,
+        const deleteImageTagParams = {
+          image,
         };
 
-        const deleteImageTagResult = containerRegistryService.deleteImageTag(params);
+        const deleteImageTagResult = containerRegistryService.deleteImageTag(deleteImageTagParams);
 
         // all methods should return a Promise
         expectToBePromise(deleteImageTagResult);
@@ -1617,14 +2043,29 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/tags/{image}', 'DELETE');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/tags/{image}', 'DELETE');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.path['image']).toEqual(image);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.path.image).toEqual(image);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __deleteImageTagTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __deleteImageTagTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __deleteImageTagTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1632,7 +2073,7 @@ describe('ContainerRegistryV1', () => {
         const image = 'testString';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const deleteImageTagParams = {
           image,
           headers: {
             Accept: userAccept,
@@ -1640,13 +2081,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.deleteImageTag(params);
+        containerRegistryService.deleteImageTag(deleteImageTagParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.deleteImageTag({});
@@ -1655,30 +2096,31 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const deleteImageTagPromise = containerRegistryService.deleteImageTag();
-        expectToBePromise(deleteImageTagPromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.deleteImageTag();
+        } catch (e) {
+          err = e;
+        }
 
-        deleteImageTagPromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('listDeletedImages', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __listDeletedImagesTest() {
         // Construct the params object for operation listDeletedImages
         const namespace = 'testString';
-        const params = {
-          namespace: namespace,
+        const listDeletedImagesParams = {
+          namespace,
         };
 
-        const listDeletedImagesResult = containerRegistryService.listDeletedImages(params);
+        const listDeletedImagesResult = containerRegistryService.listDeletedImages(listDeletedImagesParams);
 
         // all methods should return a Promise
         expectToBePromise(listDeletedImagesResult);
@@ -1686,28 +2128,43 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/trash', 'GET');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/trash', 'GET');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.qs['namespace']).toEqual(namespace);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.qs.namespace).toEqual(namespace);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __listDeletedImagesTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __listDeletedImagesTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __listDeletedImagesTest();
       });
 
       test('should prioritize user-given headers', () => {
         // parameters
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const listDeletedImagesParams = {
           headers: {
             Accept: userAccept,
             'Content-Type': userContentType,
           },
         };
 
-        containerRegistryService.listDeletedImages(params);
+        containerRegistryService.listDeletedImages(listDeletedImagesParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
 
@@ -1718,16 +2175,17 @@ describe('ContainerRegistryV1', () => {
       });
     });
   });
+
   describe('restoreTags', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __restoreTagsTest() {
         // Construct the params object for operation restoreTags
         const digest = 'testString';
-        const params = {
-          digest: digest,
+        const restoreTagsParams = {
+          digest,
         };
 
-        const restoreTagsResult = containerRegistryService.restoreTags(params);
+        const restoreTagsResult = containerRegistryService.restoreTags(restoreTagsParams);
 
         // all methods should return a Promise
         expectToBePromise(restoreTagsResult);
@@ -1735,14 +2193,29 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/trash/{digest}/restoretags', 'POST');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/trash/{digest}/restoretags', 'POST');
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.path['digest']).toEqual(digest);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.path.digest).toEqual(digest);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __restoreTagsTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __restoreTagsTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __restoreTagsTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1750,7 +2223,7 @@ describe('ContainerRegistryV1', () => {
         const digest = 'testString';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const restoreTagsParams = {
           digest,
           headers: {
             Accept: userAccept,
@@ -1758,13 +2231,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.restoreTags(params);
+        containerRegistryService.restoreTags(restoreTagsParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.restoreTags({});
@@ -1773,30 +2246,31 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const restoreTagsPromise = containerRegistryService.restoreTags();
-        expectToBePromise(restoreTagsPromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.restoreTags();
+        } catch (e) {
+          err = e;
+        }
 
-        restoreTagsPromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
+
   describe('restoreImage', () => {
     describe('positive tests', () => {
-      test('should pass the right params to createRequest', () => {
+      function __restoreImageTest() {
         // Construct the params object for operation restoreImage
         const image = 'testString';
-        const params = {
-          image: image,
+        const restoreImageParams = {
+          image,
         };
 
-        const restoreImageResult = containerRegistryService.restoreImage(params);
+        const restoreImageResult = containerRegistryService.restoreImage(restoreImageParams);
 
         // all methods should return a Promise
         expectToBePromise(restoreImageResult);
@@ -1804,14 +2278,29 @@ describe('ContainerRegistryV1', () => {
         // assert that create request was called
         expect(createRequestMock).toHaveBeenCalledTimes(1);
 
-        const options = getOptions(createRequestMock);
+        const mockRequestOptions = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/api/v1/trash/{image}/restore', 'POST');
+        checkUrlAndMethod(mockRequestOptions, '/api/v1/trash/{image}/restore', 'POST');
         const expectedAccept = undefined;
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
-        checkUserHeader(createRequestMock, 'Account', service.account);
-        expect(options.path['image']).toEqual(image);
+        checkUserHeader(createRequestMock, 'Account', containerRegistryServiceOptions.account);
+        expect(mockRequestOptions.path.image).toEqual(image);
+      }
+
+      test('should pass the right params to createRequest with enable and disable retries', () => {
+        // baseline test
+        __restoreImageTest();
+
+        // enable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.enableRetries();
+        __restoreImageTest();
+
+        // disable retries and test again
+        createRequestMock.mockClear();
+        containerRegistryService.disableRetries();
+        __restoreImageTest();
       });
 
       test('should prioritize user-given headers', () => {
@@ -1819,7 +2308,7 @@ describe('ContainerRegistryV1', () => {
         const image = 'testString';
         const userAccept = 'fake/accept';
         const userContentType = 'fake/contentType';
-        const params = {
+        const restoreImageParams = {
           image,
           headers: {
             Accept: userAccept,
@@ -1827,13 +2316,13 @@ describe('ContainerRegistryV1', () => {
           },
         };
 
-        containerRegistryService.restoreImage(params);
+        containerRegistryService.restoreImage(restoreImageParams);
         checkMediaHeaders(createRequestMock, userAccept, userContentType);
       });
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async () => {
         let err;
         try {
           await containerRegistryService.restoreImage({});
@@ -1842,17 +2331,17 @@ describe('ContainerRegistryV1', () => {
         }
 
         expect(err.message).toMatch(/Missing required parameters/);
-        done();
       });
 
-      test('should reject promise when required params are not given', done => {
-        const restoreImagePromise = containerRegistryService.restoreImage();
-        expectToBePromise(restoreImagePromise);
+      test('should reject promise when required params are not given', async () => {
+        let err;
+        try {
+          await containerRegistryService.restoreImage();
+        } catch (e) {
+          err = e;
+        }
 
-        restoreImagePromise.catch(err => {
-          expect(err.message).toMatch(/Missing required parameters/);
-          done();
-        });
+        expect(err.message).toMatch(/Missing required parameters/);
       });
     });
   });
