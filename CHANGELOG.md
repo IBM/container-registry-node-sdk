@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.0...v1.1.1) (2024-01-08)
+
+
+### Bug Fixes
+
+* **project:** Remediate vulnerabilities ([9971995](https://github.com/IBM/container-registry-node-sdk/commit/997199518ea983cb9f7508b46bb919628966a99d))
+
 # [1.1.0](https://github.com/IBM/container-registry-node-sdk/compare/v1.0.0...v1.1.0) (2023-07-21)
 
 
