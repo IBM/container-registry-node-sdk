@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.1...v1.1.2) (2024-07-11)
+
+
+### Bug Fixes
+
+* **project:** Upgrade micromatch for CVE-2024-4067 ([#30](https://github.com/IBM/container-registry-node-sdk/issues/30)) ([901259a](https://github.com/IBM/container-registry-node-sdk/commit/901259ac4202be603dbea124a87a9dfb4654541b))
+
 ## [1.1.1](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.0...v1.1.1) (2024-01-08)
 
 
