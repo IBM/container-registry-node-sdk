@@ -1,5 +1,5 @@
 /**
- * (C) Copyright IBM Corp. 2023.
+ * (C) Copyright IBM Corp. 2024.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 /**
- * IBM OpenAPI SDK Code Generator Version: 3.75.0-726bc7e3-20230713-221716
+ * IBM OpenAPI SDK Code Generator Version: 3.94.0-fa797aec-20240814-142622
  */
 
 import * as extend from 'extend';
@@ -23,9 +23,9 @@ import { IncomingHttpHeaders, OutgoingHttpHeaders } from 'http';
 import {
   Authenticator,
   BaseService,
+  UserOptions,
   getAuthenticatorFromEnvironment,
   validateParams,
-  UserOptions,
 } from 'ibm-cloud-sdk-core';
 import { getSdkHeaders } from '../lib/common';
 
@@ -54,7 +54,6 @@ class ContainerRegistryV1 extends BaseService {
     ['jp-osa', 'https://jp2.icr.io'], // jp-osa
     ['ca-tor', 'https://ca.icr.io'], // ca-tor
     ['br-sao', 'https://br.icr.io'], // br-sao
-    ['eu-fr2', 'https://fr2.icr.io'], // eu-fr2
   ]);
 
   /**
@@ -77,7 +76,7 @@ class ContainerRegistryV1 extends BaseService {
    * @param {UserOptions} [options] - The parameters to send to the service.
    * @param {string} [options.serviceName] - The name of the service to configure
    * @param {Authenticator} [options.authenticator] - The Authenticator object used to authenticate requests to the service
-   * @param {string} [options.serviceUrl] - The URL for the service
+   * @param {string} [options.serviceUrl] - The base URL for the service
    * @returns {ContainerRegistryV1}
    */
 
@@ -106,7 +105,7 @@ class ContainerRegistryV1 extends BaseService {
    *
    * @param {Object} options - Options for the service.
    * @param {string} options.account - The unique ID for your IBM Cloud account.
-   * @param {string} [options.serviceUrl] - The base url to use when contacting the service. The base url may differ between IBM Cloud regions.
+   * @param {string} [options.serviceUrl] - The base URL for the service
    * @param {OutgoingHttpHeaders} [options.headers] - Default headers that shall be included with every request to the service.
    * @param {Authenticator} options.authenticator - The Authenticator object used to authenticate requests to the service
    * @constructor
@@ -153,11 +152,7 @@ class ContainerRegistryV1 extends BaseService {
       return Promise.reject(_validationErrors);
     }
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'getAuth'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getAuth');
 
     const parameters = {
       options: {
@@ -208,11 +203,7 @@ class ContainerRegistryV1 extends BaseService {
       'private_only': _params.privateOnly,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'updateAuth'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'updateAuth');
 
     const parameters = {
       options: {
@@ -285,11 +276,7 @@ class ContainerRegistryV1 extends BaseService {
       'repository': _params.repository,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'listImages'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listImages');
 
     const parameters = {
       options: {
@@ -336,11 +323,7 @@ class ContainerRegistryV1 extends BaseService {
     }
 
     const body = _params.bulkDelete;
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'bulkDeleteImages'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'bulkDeleteImages');
 
     const parameters = {
       options: {
@@ -398,11 +381,7 @@ class ContainerRegistryV1 extends BaseService {
       'repositories': _params.repositories,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'listImageDigests'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listImageDigests');
 
     const parameters = {
       options: {
@@ -457,11 +436,7 @@ class ContainerRegistryV1 extends BaseService {
       'toimage': _params.toimage,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'tagImage'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'tagImage');
 
     const parameters = {
       options: {
@@ -510,11 +485,7 @@ class ContainerRegistryV1 extends BaseService {
       'image': _params.image,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'deleteImage'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'deleteImage');
 
     const parameters = {
       options: {
@@ -564,11 +535,7 @@ class ContainerRegistryV1 extends BaseService {
       'image': _params.image,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'inspectImage'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'inspectImage');
 
     const parameters = {
       options: {
@@ -618,11 +585,7 @@ class ContainerRegistryV1 extends BaseService {
       'image': _params.image,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'getImageManifest'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getImageManifest');
 
     const parameters = {
       options: {
@@ -669,11 +632,7 @@ class ContainerRegistryV1 extends BaseService {
       return Promise.reject(_validationErrors);
     }
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'getMessages'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getMessages');
 
     const parameters = {
       options: {
@@ -718,11 +677,7 @@ class ContainerRegistryV1 extends BaseService {
       return Promise.reject(_validationErrors);
     }
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'listNamespaces'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listNamespaces');
 
     const parameters = {
       options: {
@@ -765,11 +720,7 @@ class ContainerRegistryV1 extends BaseService {
       return Promise.reject(_validationErrors);
     }
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'listNamespaceDetails'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listNamespaceDetails');
 
     const parameters = {
       options: {
@@ -818,11 +769,7 @@ class ContainerRegistryV1 extends BaseService {
       'name': _params.name,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'createNamespace'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'createNamespace');
 
     const parameters = {
       options: {
@@ -873,11 +820,7 @@ class ContainerRegistryV1 extends BaseService {
       'name': _params.name,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'assignNamespace'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'assignNamespace');
 
     const parameters = {
       options: {
@@ -928,11 +871,7 @@ class ContainerRegistryV1 extends BaseService {
       'name': _params.name,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'deleteNamespace'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'deleteNamespace');
 
     const parameters = {
       options: {
@@ -978,11 +917,7 @@ class ContainerRegistryV1 extends BaseService {
       return Promise.reject(_validationErrors);
     }
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'getPlans'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getPlans');
 
     const parameters = {
       options: {
@@ -1030,11 +965,7 @@ class ContainerRegistryV1 extends BaseService {
       'plan': _params.plan,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'updatePlans'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'updatePlans');
 
     const parameters = {
       options: {
@@ -1081,11 +1012,7 @@ class ContainerRegistryV1 extends BaseService {
       return Promise.reject(_validationErrors);
     }
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'getQuota'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getQuota');
 
     const parameters = {
       options: {
@@ -1135,11 +1062,7 @@ class ContainerRegistryV1 extends BaseService {
       'traffic_megabytes': _params.trafficMegabytes,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'updateQuota'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'updateQuota');
 
     const parameters = {
       options: {
@@ -1186,11 +1109,7 @@ class ContainerRegistryV1 extends BaseService {
       return Promise.reject(_validationErrors);
     }
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'listRetentionPolicies'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listRetentionPolicies');
 
     const parameters = {
       options: {
@@ -1245,11 +1164,7 @@ class ContainerRegistryV1 extends BaseService {
       'retain_untagged': _params.retainUntagged,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'setRetentionPolicy'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'setRetentionPolicy');
 
     const parameters = {
       options: {
@@ -1305,11 +1220,7 @@ class ContainerRegistryV1 extends BaseService {
       'retain_untagged': _params.retainUntagged,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'analyzeRetentionPolicy'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'analyzeRetentionPolicy');
 
     const parameters = {
       options: {
@@ -1359,11 +1270,7 @@ class ContainerRegistryV1 extends BaseService {
       'namespace': _params.namespace,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'getRetentionPolicy'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getRetentionPolicy');
 
     const parameters = {
       options: {
@@ -1410,11 +1317,7 @@ class ContainerRegistryV1 extends BaseService {
       return Promise.reject(_validationErrors);
     }
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'getSettings'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'getSettings');
 
     const parameters = {
       options: {
@@ -1462,11 +1365,7 @@ class ContainerRegistryV1 extends BaseService {
       'platform_metrics': _params.platformMetrics,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'updateSettings'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'updateSettings');
 
     const parameters = {
       options: {
@@ -1519,11 +1418,7 @@ class ContainerRegistryV1 extends BaseService {
       'image': _params.image,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'deleteImageTag'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'deleteImageTag');
 
     const parameters = {
       options: {
@@ -1575,11 +1470,7 @@ class ContainerRegistryV1 extends BaseService {
       'namespace': _params.namespace,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'listDeletedImages'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'listDeletedImages');
 
     const parameters = {
       options: {
@@ -1630,11 +1521,7 @@ class ContainerRegistryV1 extends BaseService {
       'digest': _params.digest,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'restoreTags'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'restoreTags');
 
     const parameters = {
       options: {
@@ -1685,11 +1572,7 @@ class ContainerRegistryV1 extends BaseService {
       'image': _params.image,
     };
 
-    const sdkHeaders = getSdkHeaders(
-      ContainerRegistryV1.DEFAULT_SERVICE_NAME,
-      'v1',
-      'restoreImage'
-    );
+    const sdkHeaders = getSdkHeaders(ContainerRegistryV1.DEFAULT_SERVICE_NAME, 'v1', 'restoreImage');
 
     const parameters = {
       options: {
@@ -2010,13 +1893,17 @@ namespace ContainerRegistryV1 {
    * model interfaces
    ************************/
 
-  /** Account settings for the targeted IBM Cloud account. */
+  /**
+   * Account settings for the targeted IBM Cloud account.
+   */
   export interface AccountSettings {
     /** Opt in to IBM Cloud Container Registry publishing platform metrics. */
     platform_metrics?: boolean;
   }
 
-  /** The authorization options for the targeted IBM Cloud account. */
+  /**
+   * The authorization options for the targeted IBM Cloud account.
+   */
   export interface AuthOptions {
     /** Enable role based authorization when authenticating with IBM Cloud IAM. */
     iam_authz?: boolean;
@@ -2024,7 +1911,9 @@ namespace ContainerRegistryV1 {
     private_only?: boolean;
   }
 
-  /** The configuration data about a container. */
+  /**
+   * The configuration data about a container.
+   */
   export interface Config {
     /** True if command is already escaped (Windows specific). */
     ArgsEscaped?: boolean;
@@ -2079,7 +1968,9 @@ namespace ContainerRegistryV1 {
     WorkingDir?: string;
   }
 
-  /** HealthConfig. */
+  /**
+   * HealthConfig.
+   */
   export interface HealthConfig {
     /** A Duration represents the elapsed time between two instants as an int64 nanosecond count. */
     Interval?: number;
@@ -2097,7 +1988,9 @@ namespace ContainerRegistryV1 {
     Timeout?: number;
   }
 
-  /** Information about a failure to delete an image as part of a bulk delete. */
+  /**
+   * Information about a failure to delete an image as part of a bulk delete.
+   */
   export interface ImageBulkDeleteError {
     /** An API error code. */
     code?: string;
@@ -2105,7 +1998,9 @@ namespace ContainerRegistryV1 {
     message?: string;
   }
 
-  /** The results of a bulk image delete request. */
+  /**
+   * The results of a bulk image delete request.
+   */
   export interface ImageBulkDeleteResult {
     /** A map of digests to the error object that explains the failure. */
     error?: JsonObject;
@@ -2113,12 +2008,16 @@ namespace ContainerRegistryV1 {
     success?: string[];
   }
 
-  /** ImageDeleteResult. */
+  /**
+   * ImageDeleteResult.
+   */
   export interface ImageDeleteResult {
     Untagged?: string;
   }
 
-  /** Important information about an image. */
+  /**
+   * Important information about an image.
+   */
   export interface ImageDigest {
     /** The build date of the image. */
     created?: number;
@@ -2132,7 +2031,9 @@ namespace ContainerRegistryV1 {
     size?: number;
   }
 
-  /** An image JSON output consistent with the Docker Remote API. */
+  /**
+   * An image JSON output consistent with the Docker Remote API.
+   */
   export interface ImageInspection {
     /** The processor architecture used to build this image, and required to run it. */
     Architecture?: string;
@@ -2168,12 +2069,16 @@ namespace ContainerRegistryV1 {
     VirtualSize?: number;
   }
 
-  /** Namespace. */
+  /**
+   * Namespace.
+   */
   export interface Namespace {
     namespace?: string;
   }
 
-  /** Details of a namespace. */
+  /**
+   * Details of a namespace.
+   */
   export interface NamespaceDetails {
     /** The IBM Cloud account that owns the namespace. */
     account?: string;
@@ -2190,18 +2095,24 @@ namespace ContainerRegistryV1 {
     updated_date?: string;
   }
 
-  /** The plan for the targeted IBM Cloud account. */
+  /**
+   * The plan for the targeted IBM Cloud account.
+   */
   export interface Plan {
     plan?: string;
   }
 
-  /** Current usage and limits for the targeted IBM Cloud account. */
+  /**
+   * Current usage and limits for the targeted IBM Cloud account.
+   */
   export interface Quota {
     limit?: QuotaDetails;
     usage?: QuotaDetails;
   }
 
-  /** QuotaDetails. */
+  /**
+   * QuotaDetails.
+   */
   export interface QuotaDetails {
     /** Storage quota or usage in bytes. The value -1 denotes "Unlimited". */
     storage_bytes?: number;
@@ -2209,7 +2120,9 @@ namespace ContainerRegistryV1 {
     traffic_bytes?: number;
   }
 
-  /** Information about an image, in a format consistent with the Docker Remote API format. */
+  /**
+   * Information about an image, in a format consistent with the Docker Remote API format.
+   */
   export interface RemoteAPIImage {
     ConfigurationIssueCount?: number;
     Created?: number;
@@ -2228,7 +2141,10 @@ namespace ContainerRegistryV1 {
     Vulnerable?: string;
   }
 
-  /** The result of restoring tags for a digest. In a successful request the digest is always restored, and zero or more of its tags may be restored. */
+  /**
+   * The result of restoring tags for a digest. In a successful request the digest is always restored, and zero or more
+   * of its tags may be restored.
+   */
   export interface RestoreResult {
     /** Successful is a list of tags that were restored. */
     successful?: string[];
@@ -2236,7 +2152,9 @@ namespace ContainerRegistryV1 {
     unsuccessful?: string[];
   }
 
-  /** A document that contains the image retention settings for a namespace. */
+  /**
+   * A document that contains the image retention settings for a namespace.
+   */
   export interface RetentionPolicy {
     /** Determines how many images are retained in each repository when the retention policy is processed. The value
      *  -1 denotes 'Unlimited' (all images are retained).
@@ -2250,7 +2168,9 @@ namespace ContainerRegistryV1 {
     retain_untagged?: boolean;
   }
 
-  /** RootFS contains information about the root filesystem of a container image. */
+  /**
+   * RootFS contains information about the root filesystem of a container image.
+   */
   export interface RootFS {
     /** Descriptor for the base layer in the image. */
     BaseLayer?: string;
@@ -2260,13 +2180,17 @@ namespace ContainerRegistryV1 {
     Type?: string;
   }
 
-  /** Details of the tags and days until expiry. */
+  /**
+   * Details of the tags and days until expiry.
+   */
   export interface Trash {
     daysUntilExpiry?: number;
     tags?: string[];
   }
 
-  /** The VA Report for a given image. */
+  /**
+   * The VA Report for a given image.
+   */
   export interface VAReport {
     /** Number of configuration issues in the image. */
     configurationIssueCount?: number;

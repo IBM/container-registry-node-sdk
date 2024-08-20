@@ -1,5 +1,5 @@
 /**
- * (C) Copyright IBM Corp. 2023.
+ * (C) Copyright IBM Corp. 2024.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,7 @@
 // need to import the whole package to mock getAuthenticatorFromEnvironment
 const sdkCorePackage = require('ibm-cloud-sdk-core');
 
-const { NoAuthAuthenticator, unitTestUtils } = sdkCorePackage;
-
+const { NoAuthAuthenticator } = sdkCorePackage;
 const ContainerRegistryV1 = require('../../dist/container-registry/v1');
 
 const {
@@ -28,7 +27,7 @@ const {
   expectToBePromise,
   checkUserHeader,
   checkForSuccessfulExecution,
-} = unitTestUtils;
+} = require('@ibm-cloud/sdk-test-utilities');
 
 const containerRegistryServiceOptions = {
   authenticator: new NoAuthAuthenticator(),
@@ -54,7 +53,6 @@ getAuthenticatorMock.mockImplementation(() => new NoAuthAuthenticator());
 let requiredGlobals;
 
 describe('ContainerRegistryV1', () => {
-
   beforeEach(() => {
     mock_createRequest();
     // these are changed when passed into the factory/constructor, so re-init
@@ -69,7 +67,7 @@ describe('ContainerRegistryV1', () => {
     }
     getAuthenticatorMock.mockClear();
   });
-  
+
   describe('the newInstance method', () => {
     test('should use defaults when options not provided', () => {
       const testInstance = ContainerRegistryV1.newInstance(requiredGlobals);
@@ -155,7 +153,6 @@ describe('ContainerRegistryV1', () => {
       expect(ContainerRegistryV1.getServiceUrlForRegion('jp-osa')).toBe('https://jp2.icr.io');      
       expect(ContainerRegistryV1.getServiceUrlForRegion('ca-tor')).toBe('https://ca.icr.io');      
       expect(ContainerRegistryV1.getServiceUrlForRegion('br-sao')).toBe('https://br.icr.io');      
-      expect(ContainerRegistryV1.getServiceUrlForRegion('eu-fr2')).toBe('https://fr2.icr.io');      
     });
   });
 

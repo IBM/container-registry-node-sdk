@@ -31,16 +31,17 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
-    "@types/node": "^14.18.36",
-    "axios": "^1.4.0",
+    "@types/node": "^18.19.45",
+    "axios": "^1.7.4",
     "extend": "^3.0.2",
-    "ibm-cloud-sdk-core": "^4.0.1",
+    "ibm-cloud-sdk-core": "^5.0.1",
     "retry-axios": "^3.0.0"
   },
   "devDependencies": {
+    "@ibm-cloud/sdk-test-utilities": "^1.0.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@typescript-eslint/eslint-plugin": "^5.44.0",

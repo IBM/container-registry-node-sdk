@@ -5,7 +5,6 @@ dist: jammy
 sudo: false
 
 node_js:
-- 16
 - 18
 - 19
 - lts/
