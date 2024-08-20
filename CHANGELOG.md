@@ -1,3 +1,11 @@
+## [1.1.3](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.2...v1.1.3) (2024-08-20)
+
+
+### Bug Fixes
+
+* **project:** Bump sdk-core and axios for CVE-2024-39338 ([bfee171](https://github.com/IBM/container-registry-node-sdk/commit/bfee171ba746e82cbc9b700b27e1303b9fcfc949))
+* **project:** Set engine requirement to Node 18 ([108c6df](https://github.com/IBM/container-registry-node-sdk/commit/108c6df109186e8cd778a0292844bb76f1acf079))
+
 ## [1.1.2](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.1...v1.1.2) (2024-07-11)
 
 
