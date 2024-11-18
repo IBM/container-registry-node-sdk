@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.3...v1.1.4) (2024-11-18)
+
+
+### Bug Fixes
+
+* **project:** bump cross-spawn for CVE-2024-21538 ([9c80223](https://github.com/IBM/container-registry-node-sdk/commit/9c80223a2a9d82692d965aa6b87f90434403ae93))
+
 ## [1.1.3](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.2...v1.1.3) (2024-08-20)
 
 
