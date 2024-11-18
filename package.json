@@ -36,6 +36,7 @@
   "dependencies": {
     "@types/node": "^18.19.45",
     "axios": "^1.7.4",
+    "cross-spawn": "^7.0.5",
     "extend": "^3.0.2",
     "ibm-cloud-sdk-core": "^5.0.1",
     "retry-axios": "^3.0.0"
