@@ -35,10 +35,10 @@
   },
   "dependencies": {
     "@types/node": "^18.19.45",
-    "axios": "^1.7.4",
+    "axios": "^1.8.2",
     "cross-spawn": "^7.0.5",
     "extend": "^3.0.2",
-    "ibm-cloud-sdk-core": "^5.0.1",
+    "ibm-cloud-sdk-core": "^5.3.2",
     "retry-axios": "^3.0.0"
   },
   "devDependencies": {
