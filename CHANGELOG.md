@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.4...v1.1.5) (2025-03-11)
+
+
+### Bug Fixes
+
+* **project:** upgrades axios and ibm-cloud-sdk-core ([#34](https://github.com/IBM/container-registry-node-sdk/issues/34)) ([0cdffe3](https://github.com/IBM/container-registry-node-sdk/commit/0cdffe35674e07941eaf545f55d7ae1cd1d6389b))
+
 ## [1.1.4](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.3...v1.1.4) (2024-11-18)
 
 
