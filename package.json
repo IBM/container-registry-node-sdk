@@ -41,6 +41,10 @@
     "ibm-cloud-sdk-core": "^5.3.2",
     "retry-axios": "^3.0.0"
   },
+  "overrides": {
+    "@octokit/core": "^6.1.4",
+    "@octokit/plugin-paginate-rest": "^11.4.1"
+  },
   "devDependencies": {
     "@ibm-cloud/sdk-test-utilities": "^1.0.0",
     "@semantic-release/changelog": "^6.0.1",
