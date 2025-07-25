@@ -1,6 +1,6 @@
 {
   "name": "@ibm-cloud/ibm-container-registry",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "IBM Cloud Container Registry Node.js SDK",
   "repository": {
     "type": "git",

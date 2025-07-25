@@ -1,3 +1,10 @@
+## [1.1.6](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.5...v1.1.6) (2025-07-25)
+
+
+### Bug Fixes
+
+* **project:** upgrade ibm-cloud-sdk-core ([c23fa86](https://github.com/IBM/container-registry-node-sdk/commit/c23fa86d9bb00e6cce45a5195d94eab6f226a392))
+
 ## [1.1.5](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.4...v1.1.5) (2025-03-11)
 
 
