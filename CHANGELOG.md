@@ -1,3 +1,10 @@
+## [1.1.7](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.6...v1.1.7) (2025-09-17)
+
+
+### Bug Fixes
+
+* **project:** upgrades axios and braces ([4232919](https://github.com/IBM/container-registry-node-sdk/commit/42329193081187e79030d59f0b47e7866a0b2d57))
+
 ## [1.1.6](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.5...v1.1.6) (2025-07-25)
 
 
