@@ -5,8 +5,8 @@ dist: jammy
 sudo: false
 
 node_js:
-- 18
-- 19
+- 20
+- 22
 - lts/
 
 # before_install:
