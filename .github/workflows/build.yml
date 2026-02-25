@@ -62,7 +62,7 @@ jobs:
         run: npm run build
 
       - name: Run Unit Tests
-        run: npm run test-unit-travis
+        run: npm run test-unit
 
       - name: Run Linter
         run: npm run lint
