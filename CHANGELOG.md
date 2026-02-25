@@ -1,3 +1,26 @@
+## [1.1.8](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.7...v1.1.8) (2025-12-08)
+
+
+### Bug Fixes
+
+* **project:** update dependencies including 'jws' security fix ([926b310](https://github.com/IBM/container-registry-node-sdk/commit/926b3106510883c85e5b3ef0562e930d7fecf05c))
+* **project:** update detect-secrets ([b770624](https://github.com/IBM/container-registry-node-sdk/commit/b770624fbd43d1564a718a4e8c6e1c589aff8885))
+* **project:** update node requirement and Travis ([b966e1f](https://github.com/IBM/container-registry-node-sdk/commit/b966e1f0352b579669722c437b130afaeb028380))
+
+## [1.1.7](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.6...v1.1.7) (2025-09-17)
+
+
+### Bug Fixes
+
+* **project:** upgrades axios and braces ([4232919](https://github.com/IBM/container-registry-node-sdk/commit/42329193081187e79030d59f0b47e7866a0b2d57))
+
+## [1.1.6](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.5...v1.1.6) (2025-07-25)
+
+
+### Bug Fixes
+
+* **project:** upgrade ibm-cloud-sdk-core ([c23fa86](https://github.com/IBM/container-registry-node-sdk/commit/c23fa86d9bb00e6cce45a5195d94eab6f226a392))
+
 ## [1.1.5](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.4...v1.1.5) (2025-03-11)
 
 
