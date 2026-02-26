@@ -6,7 +6,7 @@ branches = ["main"]
 path = "@semantic-release/changelog"
 
 [[verifyConditions]]
-path = "@semantic-release/npm"
+path = "@semantic-release/github"
 
 # Prepare steps - removed @semantic-release/git to prevent pushing files back
 [[prepare]]
