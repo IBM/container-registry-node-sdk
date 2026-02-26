@@ -5,7 +5,9 @@
   "prepare": ["@semantic-release/changelog", "@semantic-release/npm", "@semantic-release/git"],
   "publish": [
     ["@semantic-release/npm", {
-      "pkgRoot": "dist"
+      "pkgRoot": "dist",
+      "npmPublish": true,
+      "provenance": true
     }],
     {
       "path": "@semantic-release/github"
