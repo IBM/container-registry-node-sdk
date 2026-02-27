@@ -1,3 +1,12 @@
+## [1.1.8](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.7...v1.1.8) (2025-12-08)
+
+
+### Bug Fixes
+
+* **project:** update dependencies including 'jws' security fix ([926b310](https://github.com/IBM/container-registry-node-sdk/commit/926b3106510883c85e5b3ef0562e930d7fecf05c))
+* **project:** update detect-secrets ([b770624](https://github.com/IBM/container-registry-node-sdk/commit/b770624fbd43d1564a718a4e8c6e1c589aff8885))
+* **project:** update node requirement and Travis ([b966e1f](https://github.com/IBM/container-registry-node-sdk/commit/b966e1f0352b579669722c437b130afaeb028380))
+
 ## [1.1.7](https://github.com/IBM/container-registry-node-sdk/compare/v1.1.6...v1.1.7) (2025-09-17)
 
 

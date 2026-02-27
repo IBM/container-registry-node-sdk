@@ -1,0 +1,26 @@
+debug = true
+branches = ["main"]
+
+# Verify conditions - removed @semantic-release/git to prevent pushing files back
+[[verifyConditions]]
+path = "@semantic-release/changelog"
+
+[[verifyConditions]]
+path = "@semantic-release/github"
+
+# Prepare steps - removed @semantic-release/git to prevent pushing files back
+[[prepare]]
+path = "@semantic-release/changelog"
+
+[[prepare]]
+path = "@semantic-release/npm"
+
+# Publish steps
+[[publish]]
+path = "@semantic-release/npm"
+pkgRoot = "dist"
+npmPublish = true
+provenance = true
+
+[[publish]]
+path = "@semantic-release/github"
