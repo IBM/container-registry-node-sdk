@@ -9,9 +9,7 @@
   "packageRules": [
     {
       "matchDepTypes": ["devDependencies"],
-      "groupName": "devDependencies",
-      "commitMessageType": "chore",
-      "labels": ["chore"]
+      "groupName": "devDependencies"
     }
   ]
 }
