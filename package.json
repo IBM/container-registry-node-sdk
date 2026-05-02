@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@types/node": "^18.19.45",
-    "axios": "1.15.0",
+    "axios": "1.16.0",
     "braces": "^3.0.3",
     "cross-spawn": "^7.0.5",
     "extend": "^3.0.2",
