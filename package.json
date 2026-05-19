@@ -36,7 +36,7 @@
     "braces": "^3.0.3",
     "cross-spawn": "^7.0.5",
     "extend": "^3.0.2",
-    "ibm-cloud-sdk-core": "^5.4.11",
+    "ibm-cloud-sdk-core": "^5.4.19",
     "retry-axios": "^4.0.0"
   },
   "overrides": {
