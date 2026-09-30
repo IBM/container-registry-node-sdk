@@ -41,7 +41,10 @@
   },
   "overrides": {
     "@octokit/core": "^7.0.0",
-    "@octokit/plugin-paginate-rest": "^15.0.0"
+    "@octokit/plugin-paginate-rest": "^15.0.0",
+    "semantic-release": {
+      "@semantic-release/npm": "npm:@semantic-release/error@^4.0.0"
+    }
   },
   "devDependencies": {
     "@ibm-cloud/sdk-test-utilities": "^1.0.0",
